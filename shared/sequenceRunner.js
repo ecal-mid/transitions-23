@@ -141,7 +141,9 @@ export async function runRandomSequence(urls) {
     };
 
     if (first) {
+      console.log("first", first);
       first.iframe.style = "z-index:99";
+      first.iframe.contentWindow.focus();
       first.iframe.src = first.iframe.src;
     }
 
@@ -155,6 +157,7 @@ export async function runRandomSequence(urls) {
     if (!firstIframe) {
       main.removeChild(main.querySelector("iframe"));
       main.querySelector("iframe").style = "z-index:99";
+      main.querySelector("iframe").contentWindow.focus();
     }
 
     firstIframe = false;
