@@ -66,7 +66,7 @@ export async function runSequence(urls) {
 }
 
 export async function runRandomSequence(urls) {
-  let currentSequence = 0;
+  let currentSequence = Math.floor(Math.random() * urls.length);
   let currentStudent = "random";
 
   const main = document.querySelector("main");
