@@ -113,6 +113,20 @@
         height: 100%;
       }
 
+      .min-safe-h-screen {
+        /* equivalent to 100dvh in major browsers */
+        min-height: calc(
+          100vh - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0)
+        );
+      }
+
+      @supports (-webkit-touch-callout: none) {
+        .min-safe-h-screen {
+          /* for ios safari 15, safe-area-inset-bottom is 0, so a special fix apply here */
+          min-height: -webkit-fill-available;
+        }
+      }
+
       .hidden {
         display: none;
       }
@@ -148,7 +162,7 @@
     <div id="studentName"></div>
 
     <div id="index"></div>
-    <div id="menu" class="hidden">
+    <div id="menu" class="hidden min-safe-h-screen">
       <div class="menu-container">
         <div class="inner">
           <div class="p-2">
@@ -184,7 +198,7 @@
       <div class="menu-outside"></div>
     </div>
 
-    <main></main>
+    <main class="min-safe-h-screen"></main>
     <div class="debug"></div>
     <script src="main.js" type="module"></script>
   </body>
