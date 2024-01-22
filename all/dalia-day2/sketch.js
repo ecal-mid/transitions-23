@@ -1,7 +1,5 @@
-import { SpringNumber } from "../../shared/spring.js"
-import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
-
-
+import { SpringNumber } from "../../shared/spring.js";
+import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js";
 
 let centerX;
 let centerY;
@@ -31,11 +29,9 @@ let currentSize = startSize;
 let isDragging = false;
 
 window.preload = function () {
-  soundFormats('mp3', 'ogg', 'wav');
-  mySound = loadSound("sounds/son1.wav")
-
-}
-
+  //soundFormats('mp3', 'ogg', 'wav');
+  mySound = loadSound("sounds/son1.wav");
+};
 
 window.setup = function () {
   createCanvas(windowWidth, windowHeight);
@@ -45,7 +41,7 @@ window.setup = function () {
 
   let sceneSize = min(width, height);
   let objSize = sceneSize / 2;
-  startSize = objSize
+  startSize = objSize;
 };
 
 window.windowResized = function () {
@@ -58,33 +54,30 @@ window.draw = function () {
   let sceneSize = min(width, height);
   let objSize = sceneSize / 2;
 
-
-
-
-  if (currentSize > endSize)
-    currentSize += deltaTime / 1000 * 100
+  if (currentSize > endSize) currentSize += (deltaTime / 1000) * 100;
 
   if (isDragging) {
-
-
-    const distAtClick = dist(centerX, centerY, clickPositionX, clickPositionY)
-    const distNow = dist(centerX, centerY, mouseX, mouseY)
+    const distAtClick = dist(centerX, centerY, clickPositionX, clickPositionY);
+    const distNow = dist(centerX, centerY, mouseX, mouseY);
     const distOffset = distNow - distAtClick;
 
-
     currentSize = clickSize + distOffset;
-
-
-
   }
 
-  currentSize = constrain(currentSize, endSize, startSize)
+  currentSize = constrain(currentSize, endSize, startSize);
   background(255);
   rectMode(CENTER);
   fill(0);
   // rect(centerX, centerY, 300, rectHeight, rectWeight);
   // rect(centerX, centerY, rectWidth, 300, rectWeight);
-  const currentWeight = map(currentSize, startSize, endSize, startWeight, targetWeight, true);//;
+  const currentWeight = map(
+    currentSize,
+    startSize,
+    endSize,
+    startWeight,
+    targetWeight,
+    true
+  ); //;
   rect(centerX, centerY, startSize, currentSize, currentWeight);
   rect(centerX, centerY, currentSize, startSize, currentWeight);
 
@@ -98,9 +91,9 @@ window.draw = function () {
     updateRectWeight();
   }
 
-  const dt = deltaTime / 1000
+  const dt = deltaTime / 1000;
   const sizeChangeSpeed = abs(currentSize - prevSize) / dt;
-  sizeChangeSpeedSmooth = lerp(sizeChangeSpeedSmooth, sizeChangeSpeed, 0.4)
+  sizeChangeSpeedSmooth = lerp(sizeChangeSpeedSmooth, sizeChangeSpeed, 0.4);
 
   if (currentSize <= endSize + 1 && !finished && played) {
     finished = true;
@@ -111,20 +104,14 @@ window.draw = function () {
     console.log("done");
   }
 
-
   prevSize = currentSize;
 
-  const volume2 = map(sizeChangeSpeedSmooth, 0, 1000, 0, 1, true)
-  mySound.setVolume(volume2)
-  const rate2 = map(sizeChangeSpeedSmooth, 0, 1000, 0, 2, true)
+  const volume2 = map(sizeChangeSpeedSmooth, 0, 1000, 0, 1, true);
+  mySound.setVolume(volume2);
+  const rate2 = map(sizeChangeSpeedSmooth, 0, 1000, 0, 2, true);
   //console.log(rate2)
-  mySound.rate(rate2)
-
-}
-
-
-
-
+  mySound.rate(rate2);
+};
 
 window.mousePressed = function () {
   if (!played && currentSize > endSize) {
@@ -135,12 +122,12 @@ window.mousePressed = function () {
   changeHeight = true; // Set the flag to start changing height
   changeWidth = true;
   changeWeight = true;
-  if (mouseX > centerX - startSize / 2 &&
+  if (
+    mouseX > centerX - startSize / 2 &&
     mouseX < centerX + startSize / 2 &&
     mouseY > centerY - startSize / 2 &&
-    mouseY < centerY + startSize / 2) {
-
-
+    mouseY < centerY + startSize / 2
+  ) {
   }
 
   isDragging = true;
@@ -150,11 +137,8 @@ window.mousePressed = function () {
 };
 
 window.mouseReleased = function () {
-
   isDragging = false;
-
 };
-
 
 window.updateRectHeight = function () {
   let diff = targetHeight - rectHeight;
@@ -164,7 +148,7 @@ window.updateRectHeight = function () {
     rectHeight = targetHeight; // Ensure the target height is reached
     changeHeight = false; // Stop height change once target is reached
   }
-}
+};
 
 window.updateRectWidth = function () {
   let diff = targetWidth - rectWidth;
@@ -174,7 +158,7 @@ window.updateRectWidth = function () {
     rectWidth = targetWidth; // Ensure the target height is reached
     changeWidth = false; // Stop height change once target is reached
   }
-}
+};
 
 window.updateRectWeight = function () {
   let diff = targetWeight - rectWeight;
@@ -184,6 +168,4 @@ window.updateRectWeight = function () {
     rectWeight = targetWeight; // Ensure the target height is reached
     changeWeight = false; // Stop height change once target is reached
   }
-}
-
-
+};

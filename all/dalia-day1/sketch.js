@@ -1,6 +1,8 @@
 import { SpringNumber } from "../../shared/spring.js";
 import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js";
 
+//document.addEventListener("touchstart", {});
+
 let shapeId = 0;
 let shapeType = "circle"; // Initial shape type
 let shapeSizeX = 300; // Initial size of the shape
@@ -14,7 +16,7 @@ let played = false;
 let finished = false;
 
 window.preload = function () {
-  soundFormats("mp3", "ogg", "wav");
+  //soundFormats("mp3", "ogg", "wav");
   mySound = loadSound("sounds/son1.wav");
   mySound2 = loadSound("sounds/son2.wav");
 };
@@ -22,6 +24,8 @@ window.preload = function () {
 window.setup = function () {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
+
+  console.log("debug");
 };
 
 window.windowResized = function () {
@@ -49,7 +53,7 @@ window.draw = function () {
     mouseY > rectTop &&
     mouseY < rectBottom*/ true
   )
-    if (mouseIsPressed /*&& shapeType === 'circle'*/) {
+    if (mouseIsPressed || touches.length > 0 /*&& shapeType === 'circle'*/) {
       // Gradually increase the size to 500 when expanding is true for circle
       shapeSizeX += 5; //(windowWidth - shapeSize) * 0.1;
       shapeSizeY += 5; //(windowWidth - shapeSize) * 0.1;
@@ -120,6 +124,7 @@ window.draw = function () {
 };
 
 window.touchStarted = function () {
+  console.log("touchStarted");
   if (!played) {
     mySound.play(0, 1, 0);
     mySound.loop();
