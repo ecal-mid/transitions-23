@@ -18,6 +18,7 @@ export class MiniCircle {
         });
         this.isActive = false;
         this.isCrossActive = false;
+        this.arrived = false;
         this.radius = 10;
         this.color = color(random(255), random(255), random(255));
         this.activeColor = color(0);
@@ -36,8 +37,14 @@ export class MiniCircle {
             fill(0)
         ellipse(this.springX.position, this.springY.position, this.radius * 2, this.radius * 2);
 
-        if (this.isCrossActive)
+        if (this.isCrossActive) {
+
             fill(this.activeColor);
+            setTimeout(() => {
+                this.arrived = true;
+            }, "3000");
+        }
+
         else
             fill(this.color)
         ellipse(this.springX.position, this.springY.position, this.radius * 2, this.radius * 2);

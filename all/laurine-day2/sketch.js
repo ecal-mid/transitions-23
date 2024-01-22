@@ -1,5 +1,10 @@
 // import { triangle } from "./triangle.js";
 import { SpringNumber } from "../../shared/spring.js"
+import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
+
+let finished = false
+
+
 
 let shapeId = 0
 let triangles = []
@@ -52,6 +57,7 @@ window.mouseClicked = function () {
     shapeId++
     shapeId %= 2
 
+
     for (let i = 0; i < triangles.length; i++) {
         triangles[i].isClicked(mouseX, mouseY)
     }
@@ -73,6 +79,11 @@ window.mouseClicked = function () {
             const scaleFactor = diagonal / objSize;
             scaleSpring.target = scaleFactor;
             state++;
+            setTimeout(() => {
+                sendSequenceNextSignal(); // finish sketch
+                noLoop();
+
+            }, "3000");
             break;
     }
 }
@@ -80,6 +91,8 @@ window.mouseClicked = function () {
 
 window.draw = function () {
     background(255);
+
+
 
     rotateSpring.step(deltaTime / 1000)
     scaleSpring.step(deltaTime / 1000)
@@ -211,9 +224,9 @@ class Triangle {
 
         // strokeWeight(strokeSpring / 2);
         beginShape();
-        vertex(-.1,-.1)
-        vertex(this.firstSpring.position, -.1)
-        vertex(-.1, this.firstSpring.position)
+        vertex(0, 0)
+        vertex(this.firstSpring.position, 0)
+        vertex(0, this.firstSpring.position)
         //vertex()
         endShape(CLOSE)
         pop()

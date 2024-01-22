@@ -4,6 +4,12 @@ let drops = [];
 let overlapCheck;
 let raining = false;
 let isFinished = false;
+let soundPlayed = false;
+let sound1;
+
+window.preload = function () {
+  sound1 = loadSound("./song/tombe2.mp3");
+};
 
 window.setup = function () {
   createCanvas(windowWidth, windowHeight);
@@ -50,7 +56,7 @@ window.draw = function () {
     }
 
     let drop = new RainDrop(dropX, -10);
-
+    sound1.play();
     drops.push(drop);
   }
 
@@ -108,10 +114,18 @@ window.draw = function () {
 
 window.mousePressed = function () {
   raining = true;
+  if (!soundPlayed) {
+    //sound1.play();
+    soundPlayed = true;
+  }
 };
 
 window.mouseReleased = function () {
   raining = false;
+  //sound1.stop();
+  soundPlayed = false;
+  // x = lerp(x, width / 2, 0.2);
+  // y = lerp(y, height / 2, 0.2);
 };
 
 const gravity = 250;

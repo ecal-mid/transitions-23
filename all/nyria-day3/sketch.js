@@ -1,6 +1,14 @@
 import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js";
 import { SpringNumber } from "../../shared/spring.js";
 
+let sound1;
+let sound2;
+
+window.preload = function () {
+  sound1 = loadSound("./song/croix-pet.mp3");
+  // sound2 = loadSound("./song/tombe.mp3");
+};
+
 const springCross = new SpringNumber({
   position: 10, // start position
   frequency: 4.5, // oscillations per second (approximate)
@@ -120,6 +128,7 @@ window.draw = function () {
 
       if (isMousePressed) {
         addition -= 1;
+        sound1.play();
       } else {
         addition += 1;
       }
@@ -177,6 +186,14 @@ window.draw = function () {
   for (const circle of circles) {
     circle.update();
     circle.draw();
+
+    // if (!soundPlayed) {
+    //   sound1.play();
+    //   soundPlayed = true;
+    // } else {
+    //   sound1.stop();
+    //   soundPlayed = false;
+    // }
   }
 };
 

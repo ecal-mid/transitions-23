@@ -1,4 +1,23 @@
 import { SpringNumber, createSpringSettings } from "../../shared/spring.js"
+
+import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
+
+let finished = false
+
+
+window.mouseClicked = function () {
+
+}
+
+window.draw = function () {
+
+    background(255, 0, 0);
+    if (finished) {
+        sendSequenceNextSignal(); // finish sketch
+        noLoop();
+    }
+
+}
 let spring
 let squareSize = 0;
 let state = 0;
@@ -65,6 +84,7 @@ window.windowResized = function () {
 }
 
 window.mousePressed = function () {
+
     //squareSize = 20;
     //spring.target = 1
 
@@ -76,6 +96,11 @@ window.mousePressed = function () {
 
     if (allLocked && !endClicked) {
         endClicked = true
+        setTimeout(() => {
+            sendSequenceNextSignal(); // finish sketch
+            noLoop();
+
+        }, "3000");
 
         for (const corner of corners) {
 

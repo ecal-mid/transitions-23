@@ -1,4 +1,8 @@
 import { MiniCircle } from "./miniCircle.js";
+import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
+
+let finished = false
+
 
 let circles = [];
 
@@ -50,15 +54,14 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
 }
 
+
 window.mouseClicked = function () {
 
 }
 
 
+
 window.draw = function () {
-
-
-
 
     const sceneSize = min(width, height)
 
@@ -70,6 +73,9 @@ window.draw = function () {
 
     const deltaTimeSeconds = deltaTime / 1000
     const secondsUntilFullProgress = 3; // seconds
+
+
+
     if (progress < 1) {
         if (mouseIsPressed) {
             progress += deltaTimeSeconds / secondsUntilFullProgress;
@@ -82,7 +88,7 @@ window.draw = function () {
 
 
 
-
+    let count = 0;
     for (let i = 0; i < circles.length; i++) {
 
         const circleProgressNeeded = map(i, 0, circles.length - 1, 0, 1);
@@ -111,8 +117,21 @@ window.draw = function () {
         }
         circles[i].update(deltaTimeSeconds);
 
+        if (circles[i].arrived) {
+            count++
+        }
+
 
     }
+    if (count == circles.length - 1) {
+        console.log("count")
+        if (!finished) {
+            finished = true;
+            sendSequenceNextSignal(); // finish sketch
+            noLoop();
+        }
+    }
+
 
     background(255);
 
