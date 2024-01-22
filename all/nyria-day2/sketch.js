@@ -141,7 +141,7 @@ class RainDrop {
   }
 
   display() {
-    stroke(2);
+    stroke(0);
     strokeWeight(this.weight);
     line(this.x, this.y, this.x, this.y - this.length);
   }
