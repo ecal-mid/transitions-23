@@ -51,7 +51,7 @@ const exampleSequence = [
   "all/andreas-day1",
   "all/andreas-day2",
   "all/andreas-day3",
-  "all/andreas-day4",
+  //"all/andreas-day4",
 ];
 
 loadSequenceMetadata(exampleSequence).then((sequenceData) => {
