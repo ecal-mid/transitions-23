@@ -102,7 +102,7 @@ window.draw = function () {
   }
   const allOut = drops.length > 0 && drops.every((drop) => drop.isOut);
   if (allOut) {
-    console.log("done");
+    //console.log("done");
     sendSequenceNextSignal();
     noLoop();
   }

@@ -55,7 +55,7 @@ const exampleSequence = [
 ];
 
 loadSequenceMetadata(exampleSequence).then((sequenceData) => {
-  console.log(sequenceData);
+  //console.log(sequenceData);
   runRandomSequence(sequenceData);
 });
 

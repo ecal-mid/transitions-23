@@ -25,7 +25,7 @@ window.setup = function () {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
 
-  console.log("debug");
+  //console.log("debug");
 };
 
 window.windowResized = function () {
@@ -108,7 +108,7 @@ window.draw = function () {
     finished = true;
     sendSequenceNextSignal();
     noLoop();
-    console.log("done");
+    //console.log("done");
   }
 
   // if (shapeSize >= windowWidth-1) {
@@ -124,7 +124,7 @@ window.draw = function () {
 };
 
 window.touchStarted = function () {
-  console.log("touchStarted");
+  //console.log("touchStarted");
   if (!played) {
     mySound.play(0, 1, 0);
     mySound.loop();

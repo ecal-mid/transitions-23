@@ -155,7 +155,7 @@ window.draw = function () {
 
       mouseCircle.state = State.Finished
       if (mouseCircle.state = State.Finished) {
-        console.log("test")
+        //console.log("test")
         count++
         if (count >= 25) {
 
@@ -216,7 +216,7 @@ window.draw = function () {
       finished = true
       sendSequenceNextSignal()
       noLoop()
-      console.log("done");
+      //console.log("done");
 
     }
 

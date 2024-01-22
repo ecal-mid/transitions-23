@@ -130,7 +130,7 @@ window.draw = function () {
     switch(stage)
     {
         case 0:
-            console.log(windSound.volume())
+            //console.log(windSound.volume())
             fill(col,0,0)
             noStroke()
             rect(0, 0, objSize, objSize,C1,C2,C3,C4);
@@ -147,7 +147,7 @@ window.draw = function () {
             setTimeout(() => {
                 colC.target = 0
             }, 100);
-            console.log("cercle")
+            //console.log("cercle")
             fill(ColCircle,0,0)
             noStroke()
             circle(0, 0, objSize)
@@ -180,7 +180,7 @@ window.draw = function () {
         }
     }
 
-    console.log(timeKeeper)
+    //console.log(timeKeeper)
 
     if(changerDeForme == true)
     {

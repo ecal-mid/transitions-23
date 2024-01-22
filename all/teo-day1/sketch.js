@@ -147,22 +147,22 @@ window.mouseReleased = function () {
    
     if (mouseX < centerX && mouseY < centerY) {
         spring.target = objSize
-        console.log("mouse released")
+        //console.log("mouse released")
     }
 
     if (mouseX > centerX && mouseY < centerY) {
         spring2.target = objSize
-        console.log("mouse released")
+        //console.log("mouse released")
     }
 
     if (mouseX > centerX && mouseY > centerY) {
         spring3.target = objSize
-        console.log("mouse released")
+        //console.log("mouse released")
     }
 
     if (mouseX < centerX && mouseY > centerY) {
         spring4.target =  objSize
-        console.log("mouse released")
+        //console.log("mouse released")
     }
  }
 

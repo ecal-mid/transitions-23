@@ -20,7 +20,7 @@ export async function runSequence(urls) {
   if (params.has("debug")) {
     debug.style.display = "block";
   }
-  console.log(params);
+  //console.log(params);
 
   for (const url of urls) {
     sketches.push({
@@ -57,7 +57,7 @@ export async function runSequence(urls) {
     "message",
     (event) => {
       if (event.data === "finished") {
-        console.log("received message to move to next sketch");
+        //console.log("received message to move to next sketch");
         next();
       }
     },
@@ -141,7 +141,7 @@ export async function runRandomSequence(urls) {
     };
 
     if (first) {
-      console.log("first", first);
+      //console.log("first", first);
       first.iframe.style = "z-index:99";
       first.iframe.contentWindow.focus();
       first.iframe.src = first.iframe.src;

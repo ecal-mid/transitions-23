@@ -124,7 +124,7 @@ window.draw = function () {
 
     }
     if (count == circles.length - 1) {
-        console.log("count")
+        //console.log("count")
         if (!finished) {
             finished = true;
             sendSequenceNextSignal(); // finish sketch

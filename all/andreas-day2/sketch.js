@@ -167,7 +167,7 @@ window.draw = function () {
     });
     if (abs(currentPointsScale - targetPointsScale) < 0.001) {
         noLoop();
-        console.log("done");
+        //console.log("done");
         sendSequenceNextSignal();
     }
 

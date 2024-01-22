@@ -101,7 +101,7 @@ window.draw = function () {
     mySound.stop();
     played = false;
     noLoop();
-    console.log("done");
+    //console.log("done");
   }
 
   prevSize = currentSize;

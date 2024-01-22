@@ -22,7 +22,7 @@ const spring = new SpringNumber({
 
 window.preload = function () {
     soundEffect = loadSound('./assets/BOUB.mp3');
-    console.log(soundEffect);
+    //console.log(soundEffect);
 
 
 }

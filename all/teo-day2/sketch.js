@@ -214,7 +214,7 @@ if (x >= 19.5 && x <= 20.5) {
   
    
     
-    console.log(positions.length)
+    //console.log(positions.length)
 
   
             break;

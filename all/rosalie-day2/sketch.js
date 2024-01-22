@@ -115,7 +115,7 @@ window.draw = function () {
       }
     }
   } else {
-    console.log("All circles are active");
+    //console.log("All circles are active");
     setTimeout(() => {
       sendSequenceNextSignal();
     }, 1000);

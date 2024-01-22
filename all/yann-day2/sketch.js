@@ -13,7 +13,7 @@ let mysound;
 
 window.preload = function () {
   mysound = loadSound("./sound/bubble.mp3");
-  console.log("Sound loaded");
+  //console.log("Sound loaded");
 };
 
 window.mousePressed = function () {
@@ -62,7 +62,7 @@ class Circle {
     let d = dist(inputX, inputY, this.x, this.y);
     if (d <= this.pointSize + 60) {
       if (!this.played) {
-        console.log("in");
+        //console.log("in");
         this.sound.play();
 
         this.played = true;

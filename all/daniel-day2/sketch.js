@@ -95,7 +95,7 @@ window.mouseDragged = function (){
   if(d >= 300 && !figerTrait2){ 
     zone = true;
     springCol.target = 1 * d / 2;
-    console.log(zone)
+    //console.log(zone)
   }
   else
   {
@@ -213,7 +213,7 @@ window.draw = function () {
       
     case 3:{
 
-      console.log(x, springX.position, springX.target)
+      //console.log(x, springX.position, springX.target)
 
       push()
       strokeWeight(strokeW);

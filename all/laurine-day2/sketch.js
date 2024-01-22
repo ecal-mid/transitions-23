@@ -46,7 +46,7 @@ window.setup = function () {
     for (let i = 0; i < 4; i++) {
         triangles.push(new Triangle(i * 90))
     }
-    console.log(triangles);
+    //console.log(triangles);
 }
 
 window.windowResized = function () {

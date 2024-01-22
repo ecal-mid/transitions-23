@@ -264,7 +264,7 @@ window.draw = function () {
         shapeId++;
         }
 
-        console.log(y)
+        //console.log(y)
 
         break;
 
@@ -384,7 +384,7 @@ class Boundary {
     show() {
         let pos = this.body.position;
         let angle = this.body.angle;
-        console.log("Boundary Orientation:", this.body.angle); 
+        //console.log("Boundary Orientation:", this.body.angle);
         push();
         translate(pos.x, pos.y);
         rotate(angle);

@@ -23,7 +23,7 @@ let isFinished = false;
 
 window.preload = function () {
   Sound = loadSound("./sound/blob.wav");
-  console.log("Sound loaded");
+  //console.log("Sound loaded");
 };
 
 window.setup = function () {
@@ -88,7 +88,7 @@ window.draw = function () {
 
   if (gridCountX === 5 && gridCountY === 5) {
     isFinished = true;
-    console.log("Finished");
+    //console.log("Finished");
     pointSize = firstCircleSize; // Replace with the size of your first circle
   } else if (gridCountX > 1 && gridCountY > 1) {
     pointSize = pointSize; // Replace with the size you want when the grid is bigger than 1x1

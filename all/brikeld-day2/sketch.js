@@ -91,7 +91,7 @@ window.draw = function () {
     setTimeout(() => {
       sendSequenceNextSignal();
       noLoop();
-      console.log("ok");
+      //console.log("ok");
     }, 1500);
   }
 
@@ -144,7 +144,7 @@ window.draw = function () {
 
     case 1:
       state = 1;
-      console.log(state);
+      //console.log(state);
       circleSizeSpring.step(deltaTime / 1000);
       circlePosXSpring.step(deltaTime / 1000);
       circlePosYSpring.step(deltaTime / 1000);

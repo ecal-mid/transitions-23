@@ -51,7 +51,7 @@ class Circle {
         push();
         translate(this.positionX, this.positionY);
         // scale(this.scaleSpring.position);
-        console.log(this.radius)
+        //(this.radius)
         circle(0, 0, this.radius * 2);
         pop();
     }

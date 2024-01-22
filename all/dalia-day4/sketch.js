@@ -135,7 +135,7 @@ window.draw = function () {
           finished = true
           sendSequenceNextSignal()
           noLoop()
-          console.log("done");
+          //console.log("done");
 
         }
 
@@ -151,7 +151,7 @@ window.draw = function () {
         circle.radius = targetRadius; // Ensure radius stays at 250 pixels
 
 
-        console.log("Circle Radius:", circle.radius);
+        //console.log("Circle Radius:", circle.radius);
 
       }
     }

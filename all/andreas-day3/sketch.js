@@ -60,11 +60,11 @@ class Square {
         }
         // console.log(this.delta, this.state);
         if (this.state == 1 && abs(this.delta) < 0.1) {
-            console.log("state 1");
+            //console.log("state 1");
             this.state++;
         }
         if (abs(this.delta) > 2 && this.miniSquares[0].state == 1 && this.state == 2) {
-            console.log("state 3");
+            //console.log("state 3");
             this.miniSquares[1].state = 1;
             this.state++;
         }

@@ -101,7 +101,7 @@ window.draw = function () {
         startPlayTransition = true;
     }
     if ( abs(offsetX) > 2.8 && abs(offsetX) > 2.8) {
-        console.log("stop transition");
+        //console.log("stop transition");
         springOffsetX.target = 3;
         springOffsetY.target = 3;
         startTransition = false;
@@ -111,7 +111,7 @@ window.draw = function () {
 
         if (abs(offsetX - 3) < 0.01 && abs(offsetY - 3) < 0.01) {
             sendSequenceNextSignal(); // finish sketch
-            console.log("finish sketch");
+            //console.log("finish sketch");
 		    noLoop();
         }
     }
@@ -125,7 +125,7 @@ window.draw = function () {
         // gridX = int(map(mouseX, 0, width, 4, 10));
 
     if (startTransition) {
-        console.log("start transition");
+        //console.log("start transition");
 
         springOffsetX.position = offsetX;
         springOffsetY.position = offsetY; 

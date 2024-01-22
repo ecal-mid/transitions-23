@@ -12,7 +12,7 @@ let mouseXSpeed;
 
 window.preload = function () {
   Sound = loadSound("./sound/squish.mp3");
-  console.log("Sound loaded");
+  //console.log("Sound loaded");
 };
 
 window.setup = function () {

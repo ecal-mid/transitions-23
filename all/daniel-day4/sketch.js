@@ -175,7 +175,7 @@ class Square{
 		setTimeout(() => {
 			BlackSquare.shift(this.id);
 			this.Spring.target = 255;
-			console.log(this.id)
+			//console.log(this.id)
 			outSound.play()
 			setTimeout(() => {
 				this.mouseIsIn = false;
@@ -191,8 +191,8 @@ class Square{
 					this.id = BlackSquare.length;
 					BlackSquare.push(this);
 					this.Spring.target = 0;
-					console.log(this.id)
-					console.log(BlackSquare.length)
+					//console.log(this.id)
+					//console.log(BlackSquare.length)
 					inSound.play()
 				}
 				this.mouseIsIn = true;

@@ -19,7 +19,7 @@ window.preload = function () {
   sound2 = loadSound("./sound/pop-02.mp3");
   sound3 = loadSound("./sound/pop-03.mp3");
   sound4 = loadSound("./sound/pop-04.mp3");
-  console.log("Sound loaded");
+  //console.log("Sound loaded");
 };
 
 class Shape {
@@ -58,11 +58,11 @@ class Shape {
             },
             onStartDrag: (o) => {
               cursor("grabbing");
-              console.log("start drag :" + o);
+              //console.log("start drag :" + o);
             },
             onStopDrag: (o) => {
               cursor("default");
-              console.log("stop drag :" + o);
+              //console.log("stop drag :" + o);
             },
           }),
         });
@@ -81,7 +81,7 @@ class Shape {
         });
       }
 
-      console.log(this.pointsDrag);
+      //console.log(this.pointsDrag);
     });
   }
 
