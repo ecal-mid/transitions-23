@@ -1,205 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
 
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <title>Transitions</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
 
-    <style>
-      @font-face {
-        font-family: "NeuzeitGro-Reg";
-        src: url("./assets/2473CB_3_0.woff") format("woff");
-        font-weight: normal;
+  <title>Transitions</title>
+
+  <style>
+    @font-face {
+      font-family: "NeuzeitGro-Reg";
+      src: url("./assets/2473CB_3_0.woff") format("woff");
+      font-weight: normal;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+      font-family: "NeuzeitGro-Reg", "Helvetica Neue", Helvetica, Arial,
+        sans-serif;
+      color: #000;
+      font-size: 2rem;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .debug {
+      z-index: 999;
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      padding: 8px;
+      background: white;
+      color: black;
+      display: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      width: 100vw;
+      height: 100vh;
+      border: 0;
+    }
+
+    iframe {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      border: 0;
+
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    #studentName {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      z-index: 100;
+      transition: opacity 0.5s ease-in-out;
+      pointer-events: none;
+    }
+
+    #index {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+    }
+
+    #menu {
+      position: fixed;
+      z-index: 101;
+      color: #fff;
+      min-height: 100vh;
+      width: 100vw;
+    }
+
+    .menu-fade {
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-container {
+      position: relative;
+      min-height: 100vh;
+      width: fit-content;
+      background: #000;
+      overflow: scroll;
+    }
+
+    #credits {
+      font-size: 1.25rem;
+    }
+
+    .p-2 {
+      padding: 2rem;
+    }
+
+    .menu-container .inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .min-safe-h-screen {
+      /* equivalent to 100dvh in major browsers */
+      min-height: calc(100vh - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0));
+    }
+
+    @supports (-webkit-touch-callout: none) {
+      .min-safe-h-screen {
+        /* for ios safari 15, safe-area-inset-bottom is 0, so a special fix apply here */
+        min-height: -webkit-fill-available !important;
       }
+    }
 
+    .hidden {
+      display: none;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .link.selected {
+      text-decoration: underline;
+    }
+
+    .flex {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .title {
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
       body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-
-        font-family: "NeuzeitGro-Reg", "Helvetica Neue", Helvetica, Arial,
-          sans-serif;
-        color: #000;
-        font-size: 2rem;
-      }
-
-      ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-
-      .debug {
-        z-index: 999;
-        position: absolute;
-        left: 8px;
-        top: 8px;
-        padding: 8px;
-        background: white;
-        color: black;
-        display: none;
-      }
-
-      a:hover {
-        text-decoration: underline;
-      }
-
-      main {
-        width: 100vw;
-        height: 100vh;
-        border: 0;
-      }
-
-      iframe {
-        position: absolute;
-        width: 100vw;
-        height: 100vh;
-        border: 0;
-      }
-
-      #studentName {
-        position: fixed;
-        bottom: 2rem;
-        left: 2rem;
-        z-index: 100;
-        transition: opacity 0.5s ease-in-out;
-      }
-
-      #index {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        z-index: 100;
-      }
-
-      #menu {
-        position: fixed;
-        z-index: 101;
-        color: #fff;
-        min-height: 100vh;
-        width: 100vw;
-        background: rgba(0, 0, 0, 0.1);
-      }
-
-      #menu > div {
-        min-height: 100vh;
-        width: fit-content;
-        background: #000;
-        overflow: scroll;
+        font-size: 1.5rem;
       }
 
       #credits {
-        font-size: 1.25rem;
+        font-size: 1rem;
       }
+    }
+  </style>
+</head>
 
-      .p-2 {
-        padding: 2rem;
-      }
+<body>
+  <div id="studentName"></div>
 
-      .menu-container .inner {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-
-      .min-safe-h-screen {
-        /* equivalent to 100dvh in major browsers */
-        min-height: calc(
-          100vh - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0)
-        );
-      }
-
-      @supports (-webkit-touch-callout: none) {
-        .min-safe-h-screen {
-          /* for ios safari 15, safe-area-inset-bottom is 0, so a special fix apply here */
-          min-height: -webkit-fill-available !important;
-        }
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      .link:hover {
-        text-decoration: underline;
-        cursor: pointer;
-      }
-      .link.selected {
-        text-decoration: underline;
-      }
-
-      .flex {
-        display: flex;
-        justify-content: space-between;
-      }
-      .title {
-        margin-bottom: 1rem;
-      }
-
-      @media (max-width: 600px) {
-        body {
-          font-size: 1.5rem;
-        }
-        #credits {
-          font-size: 1rem;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div id="studentName"></div>
-
-    <div id="index"></div>
-    <div id="menu" class="hidden min-safe-h-screen">
-      <div class="menu-container min-safe-h-screen">
-        <div class="inner min-safe-h-screen">
-          <div class="p-2">
-            <div class="flex title">
-              <div>Transitions</div>
-              <div id="close-menu" class="link">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="36px"
-                  viewBox="0 0 24 24"
-                  width="36px"
-                  fill="currentColor"
-                >
-                  <path d="M0 0h24v24H0z" fill="none" />
-                  <path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                  />
-                </svg>
-              </div>
+  <div id="index" data-toggle-menu></div>
+  <div id="menu" class="hidden min-safe-h-screen">
+    <div class="menu-fade" data-toggle-menu></div>
+    <div class="menu-container min-safe-h-screen">
+      <div class="inner min-safe-h-screen">
+        <div class="p-2">
+          <div class="flex title">
+            <div>Transitions</div>
+            <div class="link" data-toggle-menu>
+              <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px"
+                fill="currentColor">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              </svg>
             </div>
-            <div id="studentList"></div>
           </div>
-          <div id="credits" class="p-2">
-            ECAL / BA Media & Interaction Design
-            <br />
-            Workshop – December 2023
-            <br />
-            Mario von Rickenbach <br />
-            Matthieu Minguet
-          </div>
+          <div id="studentList"></div>
+        </div>
+        <div id="credits" class="p-2">
+          ECAL / BA Media & Interaction Design
+          <br />
+          Workshop – December 2023
+          <br />
+          Mario von Rickenbach <br />
+          Matthieu Minguet
         </div>
       </div>
-      <div class="menu-outside"></div>
     </div>
+    <div class="menu-outside"></div>
+  </div>
 
-    <main class="min-safe-h-screen"></main>
-    <div class="debug"></div>
-    <script src="main.js" type="module"></script>
-  </body>
+  <main class="min-safe-h-screen"></main>
+  <div class="debug"></div>
+  <script src="main.js" type="module"></script>
+</body>
+
 </html>

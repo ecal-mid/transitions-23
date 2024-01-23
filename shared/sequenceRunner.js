@@ -9,247 +9,136 @@ async function loadIframe(url, target) {
   });
 }
 
-export async function runSequence(urls) {
-  const main = document.querySelector("main");
+export class SequenceRunner extends EventTarget {
 
-  const sketches = [];
-  let currentSketchId = -1;
+  sequencesFiltered;
+  currentFilter;
+  currentSequence;
+  preloadedSequence;
+  main;
 
-  const debug = document.querySelector(".debug");
-  let params = new URLSearchParams(document.location.search);
-  if (params.has("debug")) {
-    debug.style.display = "block";
-  }
-  //console.log(params);
+  constructor(sequences) {
 
-  for (const url of urls) {
-    sketches.push({
-      url: url,
-      iframe: await loadIframe(url, main),
-    });
-  }
+    super()
 
-  setSketch(0);
-  main.style.visibility = "visible";
+    this.main = document.querySelector("main");
+    this.sequences = sequences
 
-  function setSketch(id) {
-    const prev = sketches[currentSketchId];
-    if (prev) {
-      prev.iframe.style = "z-index:-99";
-      prev.iframe.src = prev.iframe.src;
-    }
+    this.setFilter(undefined)
 
-    currentSketchId = id;
-
-    const newSketch = sketches[currentSketchId];
-    if (newSketch) {
-      newSketch.iframe.style = "z-index:99;";
-      debug.innerHTML = new URL(newSketch.iframe.src).pathname;
-    }
+    window.addEventListener(
+      "message",
+      async (event) => {
+        if (event.data === "finished") {
+          this.activatePreloaded();
+        }
+      },
+      false
+    );
   }
 
-  function next() {
-    const nextId = (currentSketchId + 1) % sketches.length;
-    setSketch(nextId);
+
+
+  show(isVisible) {
+
+    this.main.style.visibility = isVisible ? "visible" : "hidden";
   }
 
-  window.addEventListener(
-    "message",
-    (event) => {
-      if (event.data === "finished") {
-        //console.log("received message to move to next sketch");
-        next();
-      }
-    },
-    false
-  );
-}
+  async activatePreloaded() {
 
-export async function runRandomSequence(urls) {
-  let currentSequence = Math.floor(Math.random() * urls.length);
-  let currentStudent = "random";
 
-  const main = document.querySelector("main");
-  main.style.visibility = "visible";
-
-  const studentName = document.getElementById("studentName");
-  const index = document.getElementById("index");
-  const menu = document.getElementById("menu");
-  const close = document.getElementById("close-menu");
-
-  // on index click toggle menu div visibility
-  index.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
-
-  // on li with class student click filter the sequence
-  menu.addEventListener("click", (e) => {
-    if (e.target.classList.contains("student")) {
-      let filteredStudent = e.target.getAttribute("student-name");
-
-      menu.classList.toggle("hidden");
-      currentStudent = filteredStudent;
-
-      // if current student highlight the li
-      document
-        .querySelectorAll(".student")
-        .forEach((link) =>
-          link.classList.toggle(
-            "selected",
-            link.getAttribute("student-name") === currentStudent
-          )
-        );
-      // remove all iframes
-      main.querySelectorAll("iframe").forEach((iframe) => {
-        main.removeChild(iframe);
-      });
-
-      // load First if random else load first of student
-      const index = urls.findIndex((item) => item.student === currentStudent);
-      currentSequence = currentStudent === "random" ? 0 : index;
-      loadFirst();
-    }
-  });
-
-  close.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
-
-  // Fill menu
-  const studentNames = urls
-    .map((item) => item.student)
-    .filter((value, index, self) => self.indexOf(value) === index);
-  const liElements = studentNames.map(
-    (name) => `<li class="student link" student-name="${name}">${name}</li>`
-  );
-  const ulInnerHTML = liElements.join("");
-
-  // get div with id inside menu div
-  const studentList = document.getElementById("studentList");
-  studentList.innerHTML = `<ul><li class="student link selected" student-name="random">Random</li>${ulInnerHTML}</ul>`;
-
-  let firstIframe;
-  let transition;
-  let previousSketch = null;
-
-  async function loadFirst() {
-    firstIframe = true;
-    // Load the first iframe at beginning
-    const first = {
-      url: urls[currentSequence].url,
-      iframe: await loadIframe(urls[currentSequence].url, main),
-    };
-
-    if (first) {
-      //console.log("first", first);
-      first.iframe.style = "z-index:99";
-      first.iframe.contentWindow.focus();
-      first.iframe.src = first.iframe.src;
+    if (this.currentSequence) {
+      this.main.removeChild(this.currentSequence.iframe);
+      this.currentSequence = undefined
     }
 
-    nextSequence();
-  }
+    this.currentSequence = this.preloadedSequence
+    this.preloadedSequence = undefined
+    console.log("activate sequence", this.currentSequence)
 
-  // First
-  loadFirst();
+    this.dispatchEvent(new CustomEvent("sequencechanged", { detail: this.sequencesFiltered[this.currentSequence.sequenceId] }))
 
-  async function setNext(nextSketch) {
-    if (!firstIframe) {
-      main.removeChild(main.querySelector("iframe"));
-      main.querySelector("iframe").style = "z-index:99";
-      main.querySelector("iframe").contentWindow.focus();
+    if (this.currentSequence) {
+      this.currentSequence.iframe.style = "z-index:99";
     }
 
-    firstIframe = false;
-
-    const next = {
-      url: nextSketch.url,
-      iframe: await loadIframe(nextSketch.url, main),
-    };
-
-    if (next) {
-      next.iframe.style = "z-index:-99";
-      next.iframe.src = next.iframe.src;
-    }
-
-    //set timeout to fade out studentName
-    clearTimeout(transition);
-
-    transition = setTimeout(() => {
-      studentName.style.opacity = "0";
-    }, 3000);
-
-    // only show student name if currentStudent is random
-    if (previousSketch.student && currentStudent == "random") {
-      studentName.innerHTML = previousSketch.student;
-      studentName.style.opacity = "1";
-    } else {
-      studentName.innerHTML = "";
-      studentName.style.opacity = "0";
-    }
-
-    // set index number
-    let sequencesToUse =
-      currentStudent === "random"
-        ? urls
-        : urls.filter((seq) => seq.student === currentStudent);
-
-    const currentSequenceObject = previousSketch;
-    const currentSequenceIndex = sequencesToUse.findIndex(
-      (seq) => seq === currentSequenceObject
+    const nextSequenceId = selectNextSequenceId(
+      this.currentSequence ? this.sequencesFiltered[this.currentSequence.sequenceId].end : undefined,
+      this.sequencesFiltered
     );
 
-    index.innerHTML = `<div class="link">${currentSequenceIndex + 1}/${
-      sequencesToUse.length
-    }</div>`;
+    this.preload(nextSequenceId)
   }
 
-  function nextSequence() {
-    previousSketch = urls[currentSequence];
+  async preload(sequenceIdToLoad) {
 
-    const nextSequence = selectNextSequence(
-      urls[currentSequence].end,
-      urls,
-      currentStudent
-    );
-    currentSequence = nextSequence;
-    setNext(urls[nextSequence]);
+    if (this.preloadedSequence) {
+      throw "preload called while already preloading"
+    }
+
+    //console.log("preloading", sequenceIdToLoad)
+    const iframe = await loadIframe(this.sequencesFiltered[sequenceIdToLoad].url, this.main)
+    iframe.style = "z-index:-99";
+
+    this.preloadedSequence = {
+      sequenceId: sequenceIdToLoad,
+      iframe: iframe,
+    };
   }
 
-  window.addEventListener(
-    "message",
-    async (event) => {
-      if (event.data === "finished") {
-        nextSequence();
-      }
-    },
-    false
-  );
+  async setFilter(filter) {
+    console.log("set filter", filter)
+
+    this.currentFilter = filter
+    this.sequencesFiltered = this.sequences.filter((seq) => this.currentFilter == undefined || seq.student === this.currentFilter)
+
+    this.clear()
+  }
+
+  clear() {
+
+    if (this.currentSequence) {
+      if (this.currentSequence.iframe)
+        this.main.removeChild(this.currentSequence.iframe);
+      this.currentSequence = undefined
+    }
+    if (this.preloadedSequence) {
+      if (this.preloadedSequence.iframe)
+        this.main.removeChild(this.preloadedSequence.iframe);
+      this.preloadedSequence = undefined
+    }
+
+  }
+
+  async restart() {
+
+    const sequenceId = this.currentFilter ? 0 : Math.floor(Math.random() * this.sequencesFiltered.length)
+    await this.preload(sequenceId)
+
+    this.activatePreloaded()
+
+    this.show(true)
+  }
+
+  getCurrentSequenceId() {
+    return this.currentSequence ? this.currentSequence.sequenceId : -1
+  }
 }
 
-function selectNextSequence(endShape, urls, currentStudent) {
+
+function selectNextSequenceId(endShape, urls) {
   const matchingSequences = urls
     .map((seq, index) => ({ seq, index })) // Map each sequence to an object with the sequence and its index
     .filter(({ seq }) => {
       // Filter based on the endShape and, if currentStudent is provided, also filter by student name
       return (
-        seq.begin === endShape &&
-        (currentStudent === "random" || seq.student === currentStudent)
+        seq.begin === endShape
       );
     });
 
   if (matchingSequences.length > 0) {
     const randomIndex = Math.floor(Math.random() * matchingSequences.length);
     return matchingSequences[randomIndex].index; // Return the index of the selected sequence
-  } else if (currentStudent !== "random") {
-    // If no match is found and currentStudent is provided, try to find the first sequence for the currentStudent
-    const studentSequences = urls
-      .map((seq, index) => ({ seq, index }))
-      .filter(({ seq }) => seq.student === currentStudent);
-
-    if (studentSequences.length > 0) {
-      return studentSequences[0].index;
-    }
   }
 
   return 0; // Return 0 if no matching sequence is found
@@ -277,10 +166,11 @@ export async function loadSequenceMetadata(urls) {
           },
           data
         );
-      } catch (e) {}
+      } catch (e) { }
     })
   );
   sequenceData = sequenceData.filter((o) => o !== undefined);
 
   return sequenceData;
 }
+

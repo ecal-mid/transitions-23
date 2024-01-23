@@ -1,8 +1,9 @@
 import {
-  runSequence,
-  runRandomSequence,
+  SequenceRunner,
   loadSequenceMetadata,
 } from "./shared/sequenceRunner.js";
+
+import { initMenu, initTransitionUI } from "./shared/sequenceRunnerUI.js";
 
 const emptySequence = [
   "sketches/example-sequence-empty-1",
@@ -56,7 +57,12 @@ const exampleSequence = [
 
 loadSequenceMetadata(exampleSequence).then((sequenceData) => {
   //console.log(sequenceData);
-  runRandomSequence(sequenceData);
+  const runner = new SequenceRunner(sequenceData);
+
+  initMenu(runner)
+  initTransitionUI(runner)
+
+  runner.restart()
 });
 
 // const exampleSequenceObject = [
