@@ -24,6 +24,8 @@ let plop3 = false
 let plop4 = false
 let mail, plop
 
+
+
 window.preload = function () {
     mail = loadSound("asset/mail.mp3")
     plop = loadSound("asset/plop.wav")
@@ -128,8 +130,6 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight)
 }
 
-window.mouseClicked = function () {
-}
 window.keyPressed = function () {
 
     if (key === "d") {

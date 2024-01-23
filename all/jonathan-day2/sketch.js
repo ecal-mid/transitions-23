@@ -28,7 +28,7 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight)
 }
 
-window.mouseClicked = function () {
+window.mousePressed = function () {
     fortune.forEach(f => {
         f.open(mouseX, mouseY)
     })

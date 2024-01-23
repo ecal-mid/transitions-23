@@ -93,7 +93,7 @@ class Cross {
         rotate(this.rotationSpring.position); // Use rotation spring for rotation
         scale(this.scaleSpring.position);
         stroke(0); // Cross color
-        strokeWeight(30); // Cross thickness
+        strokeWeight(20); // Cross thickness
         line(-this.size / 2, 0, this.size / 2, 0); // Horizontal line
         line(0, -this.size / 2, 0, this.size / 2); // Vertical line
         pop();

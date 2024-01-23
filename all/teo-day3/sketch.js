@@ -14,9 +14,9 @@ let chain3
 let chain4
 
 const spring = new SpringNumber({
-	position: 0, // start position
-	frequency: 4.5, // oscillations per second (approximate)
-	halfLife: 0.15 // time until amplitude is halved
+    position: 0, // start position
+    frequency: 4.5, // oscillations per second (approximate)
+    halfLife: 0.15 // time until amplitude is halved
 })
 
 class Grid {
@@ -66,7 +66,7 @@ class Circle {
 let grid;
 let circles = [];
 
-let shapeId = 0;    
+let shapeId = 0;
 
 const originalPositions = [];
 const originalPositions2 = [];
@@ -125,7 +125,7 @@ window.setup = function () {
 
         startPositionX: centerX,
         startPositionY: centerY,
-        endPositionX: centerX + halfWidth-39,
+        endPositionX: centerX + halfWidth - 39,
         endPositionY: centerY,
         elementCount: 10,
         linkOptions: {
@@ -144,7 +144,7 @@ window.setup = function () {
         startPositionX: centerX,
         startPositionY: centerY,
         endPositionX: centerX,
-        endPositionY: centerY + halfWidth-39,
+        endPositionY: centerY + halfWidth - 39,
         elementCount: 10,
         linkOptions: {
             //mode: VerletMode.Pull,
@@ -161,7 +161,7 @@ window.setup = function () {
 
         startPositionX: centerX,
         startPositionY: centerY,
-        endPositionX: centerX - halfWidth+39,
+        endPositionX: centerX - halfWidth + 39,
         endPositionY: centerY,
         elementCount: 10,
         linkOptions: {
@@ -180,7 +180,7 @@ window.setup = function () {
         startPositionX: centerX,
         startPositionY: centerY,
         endPositionX: centerX,
-        endPositionY: centerY - halfWidth+39,
+        endPositionY: centerY - halfWidth + 39,
         elementCount: 10,
         linkOptions: {
             //mode: VerletMode.Pull,
@@ -294,289 +294,289 @@ window.draw = function () {
     const halfWidth = objSize / tan(60);
     const strokeW = 20;
 
-    
+
     switch (shapeId) {
 
         case 0:
-   
-    let allCirclesOutside = true;
 
-    circles.forEach((circle) => {
-        circle.draw();
+            let allCirclesOutside = true;
 
-
-       
-        circles[12].color = color(255)
+            circles.forEach((circle) => {
+                circle.draw();
 
 
-//if a circle goes outside the screen, cling sound plays
-    
 
-      
-     
+                circles[12].color = color(255, 0)
 
 
-        if (circle.x >= 0 && circle.x <= width && circle.y >= 0 && circle.y <= height) {
-           
-            allCirclesOutside = false;
-        }
-    });
+                //if a circle goes outside the screen, cling sound plays
 
-    if (allCirclesOutside) {
-        cling.play()
-       shapeId++
+
+
+
+
+
+                if (circle.x >= 0 && circle.x <= width && circle.y >= 0 && circle.y <= height) {
+
+                    allCirclesOutside = false;
+                }
+            });
+
+            if (allCirclesOutside) {
+                cling.play()
+                shapeId++
+            }
+
+            let attractionDistance = 150;
+
+
+            circles.forEach((circle) => {
+                const distance = dist(circle.originalX, circle.originalY, mouseX, mouseY);
+                const distance2 = dist(circle.x, circle.y, circle.originalX, circle.originalY);
+                if (distance < attractionDistance && distance2 < attractionDistance) {
+
+
+
+                    circle.attracted = true;
+                } else {
+                    circle.attracted = false;
+                }
+            });
+
+
+
+
+
+
+            circle(centerX, centerY, 20)
+
+            break;
+
+        case 1:
+
+
+
+
+            fill(0)
+            noStroke()
+            rectMode(CENTER)
+            strokeWeight(strokeW)
+
+
+
+
+
+
+            spring.step(deltaTime / 1000)
+
+            let lineLengthX = spring.position
+
+
+
+            stroke('black')
+            line(centerX, centerY, centerX + lineLengthX, centerY)
+
+
+            line(centerX - lineLengthX, centerY, centerX, centerY);
+
+
+
+            line(centerX, centerY - lineLengthX, centerX, centerY)
+
+
+            line(centerX, centerY, centerX, centerY + lineLengthX)
+
+            let target = mouseX - centerX
+
+            if (mouseIsPressed) {
+                spring.target = mouseX - centerX;
+
+            }
+
+            window.mousePressed = function () {
+
+                grab.play()
+
+            }
+
+            window.mouseReleased = function () {
+                spring.target = objSize / 2;
+                ding.play()
+            }
+
+
+
+            if (lineLengthX > objSize / 2 - 0.2 && lineLengthX < objSize / 2 + 0.2) {
+                shapeId++
+            }
+
+            break;
+
+        case 2:
+
+            window.mouseReleased = function () {
+                physics.gravityY = 1000
+            }
+
+            physics.bounds = {
+
+                left: 0,
+                right: width,
+                bottom: height
+            }
+
+
+            for (const body of chain.bodies) {
+                originalPositions.push({ x: body.positionX, y: body.positionY });
+            }
+
+            for (const body of chain2.bodies) {
+                originalPositions2.push({ x: body.positionX, y: body.positionY });
+            }
+
+            for (const body of chain3.bodies) {
+                originalPositions3.push({ x: body.positionX, y: body.positionY });
+            }
+
+            for (const body of chain4.bodies) {
+                originalPositions4.push({ x: body.positionX, y: body.positionY });
+            }
+
+            dragManager.update()
+            physics.update()
+
+            strokeWeight(20)
+            noFill()
+            stroke('black')
+
+
+            strokeJoin(BEVEL)
+            beginShape()
+            const firstBody = chain.bodies[0]
+
+            curveVertex(firstBody.positionX, firstBody.positionY)
+
+            for (const body of chain.bodies) {
+                curveVertex(body.positionX, body.positionY)
+                // chain.bodies[0].isFixed = true
+            }
+            const lastBody = chain.bodies[chain.bodies.length - 1]
+            curveVertex(lastBody.positionX, lastBody.positionY)
+            endShape()
+
+
+            beginShape()
+            const firstBody2 = chain2.bodies[0]
+            curveVertex(firstBody2.positionX, firstBody2.positionY)
+
+            for (const body of chain2.bodies) {
+                curveVertex(body.positionX, body.positionY)
+                // chain2.bodies[0].isFixed = true
+            }
+            const lastBody2 = chain2.bodies[chain2.bodies.length - 1]
+            curveVertex(lastBody2.positionX, lastBody2.positionY)
+            endShape()
+
+
+            beginShape()
+            const firstBody7 = chain3.bodies[0]
+            curveVertex(firstBody7.positionX, firstBody7.positionY)
+            for (const body of chain3.bodies) {
+                curveVertex(body.positionX, body.positionY)
+                // chain3.bodies[0].isFixed = true
+            }
+            const lastBody7 = chain3.bodies[chain3.bodies.length - 1]
+            curveVertex(lastBody7.positionX, lastBody7.positionY)
+            endShape()
+
+
+            beginShape()
+            const firstBody8 = chain4.bodies[0]
+            vertex(firstBody8.positionX, firstBody8.positionY)
+            for (const body of chain4.bodies) {
+                curveVertex(body.positionX, body.positionY)
+                // chain4.bodies[0].isFixed = true
+            }
+            const lastBody8 = chain4.bodies[chain4.bodies.length - 1]
+            curveVertex(lastBody8.positionX, lastBody8.positionY)
+            endShape()
+
+
+            let allBodiesOutsideScreen = true;
+
+            for (const body of chain.bodies) {
+                if (body.positionX >= 0 && body.positionX <= width && body.positionY >= 0 && body.positionY <= height) {
+                    allBodiesOutsideScreen = false;
+                    break;
+                }
+            }
+
+            if (allBodiesOutsideScreen) {
+
+                //     chain.bodies.isFixed = true
+
+
+                //    for (let i = 0; i < chain.bodies.length; i++) {
+                //         const body = chain.bodies[i];
+                //         body.positionX = originalPositions[i].x;
+                //         body.positionY = originalPositions[i].y;
+                //     }
+                //     for (let i = 0; i < chain2.bodies.length; i++) {
+                //         const body = chain2.bodies[i];
+                //         body.positionX = originalPositions2[i].x;
+                //         body.positionY = originalPositions2[i].y;
+                //     }
+                //     for (let i = 0; i < chain3.bodies.length; i++) {
+                //         const body = chain3.bodies[i];
+                //         body.positionX = originalPositions3[i].x;
+                //         body.positionY = originalPositions3[i].y;
+                //     }
+                //     for (let i = 0; i < chain4.bodies.length; i++) {
+                //         const body = chain4.bodies[i];
+                //         body.positionX = originalPositions4[i].x;
+                //         body.positionY = originalPositions4[i].y;
+                //     }
+
+                shapeId++
+            }
+
+
+
+
+
+
+            // debug visualization
+            // physics.displayDebug()
+
+
+
+            rectMode(CENTER)
+            strokeWeight(strokeW)
+            stroke(0, 0, 0)
+            line(centerX - objSize / 2, centerY, centerX + objSize / 2, centerY)
+            line(centerX, centerY - objSize / 2, centerX, centerY + objSize / 2)
+
+            break;
+
+        case 3:
+
+
+
+            fill(0)
+            noStroke()
+            rectMode(CENTER)
+            strokeWeight(strokeW)
+            stroke(0)
+            line(centerX - objSize / 2, centerY, centerX + objSize / 2, centerY)
+            line(centerX, centerY - objSize / 2, centerX, centerY + objSize / 2)
+
+            noLoop()
+            setTimeout(function () {
+                sendSequenceNextSignal()
+            }, 2000);
+
+
+            break;
     }
-
-    let attractionDistance = 150;
-
-
-    circles.forEach((circle) => {
-        const distance = dist(circle.originalX, circle.originalY, mouseX, mouseY);
-        const distance2 = dist(circle.x, circle.y, circle.originalX, circle.originalY);
-        if (distance < attractionDistance && distance2 < attractionDistance) {
-           
-          
-           
-            circle.attracted = true;
-        } else {
-            circle.attracted = false;
-        }
-    });
-
-
-
-  
-
-
-    circle(centerX, centerY, 20)
-
-    break;
-
-    case 1:
-
-   
-
-
-    fill(0)
-    noStroke()
-    rectMode(CENTER)
-    strokeWeight(strokeW)
-
-
- 
-
-      
-
-    spring.step(deltaTime / 1000) 
-
-    let lineLengthX = spring.position
-
-   
-    
-    stroke('black')
-    line(centerX , centerY, centerX + lineLengthX, centerY)
-    
-
-    line(centerX - lineLengthX, centerY, centerX, centerY);
-
-
-   
-    line(centerX, centerY - lineLengthX, centerX, centerY)
-
-   
-    line(centerX, centerY, centerX, centerY + lineLengthX)
-
-    let target = mouseX - centerX
-
-    if (mouseIsPressed) {
-        spring.target = mouseX- centerX;
-      
-    } 
-
-    window.mousePressed = function() {
-
-        grab.play()
-    
-    }
-
-    window.mouseReleased = function() {
-        spring.target = objSize / 2;
-        ding.play()
-    }
-
-   
-
-    if (lineLengthX > objSize / 2 -0.2 && lineLengthX < objSize / 2+0.2 ) {
-        shapeId++
-    }
-
-    break;
-
-    case 2:
-
-    window.mouseReleased = function() {
-        physics.gravityY = 1000
-    }
-
-    physics.bounds = {
-      
-        left: 0,
-        right: width,
-        bottom: height
-    }
-
-
-    for (const body of chain.bodies) {
-        originalPositions.push({ x: body.positionX, y: body.positionY });
-    }
-    
-    for (const body of chain2.bodies) {
-        originalPositions2.push({ x: body.positionX, y: body.positionY });
-    }
-    
-    for (const body of chain3.bodies) {
-        originalPositions3.push({ x: body.positionX, y: body.positionY });
-    }
-    
-    for (const body of chain4.bodies) {
-        originalPositions4.push({ x: body.positionX, y: body.positionY });
-    }
-
-    dragManager.update()
-    physics.update()
-
-    strokeWeight(20)
-    noFill()
-    stroke('black')
-
-
-    strokeJoin(BEVEL)
-    beginShape()
-    const firstBody = chain.bodies[0]
-
-    curveVertex(firstBody.positionX, firstBody.positionY)
-
-    for (const body of chain.bodies) {
-        curveVertex(body.positionX, body.positionY)
-        // chain.bodies[0].isFixed = true
-    }
-    const lastBody = chain.bodies[chain.bodies.length - 1]
-    curveVertex(lastBody.positionX, lastBody.positionY)
-    endShape()
-
-    
-    beginShape()
-    const firstBody2 = chain2.bodies[0]
-    curveVertex(firstBody2.positionX, firstBody2.positionY)
-
-    for (const body of chain2.bodies) {
-        curveVertex(body.positionX, body.positionY)
-        // chain2.bodies[0].isFixed = true
-    }
-    const lastBody2 = chain2.bodies[chain2.bodies.length - 1]
-    curveVertex(lastBody2.positionX, lastBody2.positionY)
-    endShape()
-
-  
-    beginShape()
-    const firstBody7 = chain3.bodies[0]
-    curveVertex(firstBody7.positionX, firstBody7.positionY)
-    for (const body of chain3.bodies) {
-        curveVertex(body.positionX, body.positionY)
-        // chain3.bodies[0].isFixed = true
-    }
-    const lastBody7 = chain3.bodies[chain3.bodies.length - 1]
-    curveVertex(lastBody7.positionX, lastBody7.positionY)
-    endShape()
-
-
-    beginShape()
-    const firstBody8 = chain4.bodies[0]
-    vertex(firstBody8.positionX, firstBody8.positionY)
-    for (const body of chain4.bodies) {
-        curveVertex(body.positionX, body.positionY)
-        // chain4.bodies[0].isFixed = true
-    }
-    const lastBody8 = chain4.bodies[chain4.bodies.length - 1]
-    curveVertex(lastBody8.positionX, lastBody8.positionY)
-    endShape()
-
-
-    let allBodiesOutsideScreen = true;
-
-for (const body of chain.bodies) {
-    if (body.positionX >= 0 && body.positionX <= width && body.positionY >= 0 && body.positionY <= height) {
-        allBodiesOutsideScreen = false;
-        break;
-    }
-}
-
-if (allBodiesOutsideScreen) {
-
-//     chain.bodies.isFixed = true
-
-
-//    for (let i = 0; i < chain.bodies.length; i++) {
-//         const body = chain.bodies[i];
-//         body.positionX = originalPositions[i].x;
-//         body.positionY = originalPositions[i].y;
-//     }
-//     for (let i = 0; i < chain2.bodies.length; i++) {
-//         const body = chain2.bodies[i];
-//         body.positionX = originalPositions2[i].x;
-//         body.positionY = originalPositions2[i].y;
-//     }
-//     for (let i = 0; i < chain3.bodies.length; i++) {
-//         const body = chain3.bodies[i];
-//         body.positionX = originalPositions3[i].x;
-//         body.positionY = originalPositions3[i].y;
-//     }
-//     for (let i = 0; i < chain4.bodies.length; i++) {
-//         const body = chain4.bodies[i];
-//         body.positionX = originalPositions4[i].x;
-//         body.positionY = originalPositions4[i].y;
-//     }
-
-shapeId++
-}
-
-
-
-
-
-   
-    // debug visualization
-    // physics.displayDebug()
-
-   
-   
-    rectMode(CENTER)
-    strokeWeight(strokeW)
-    stroke(0,0,0)
-    line(centerX - objSize / 2, centerY, centerX + objSize / 2, centerY)
-    line(centerX, centerY - objSize / 2, centerX, centerY + objSize / 2)
-
-    break;
-
-    case 3:
-
-
-
-    fill(0)
-    noStroke()
-    rectMode(CENTER)
-    strokeWeight(strokeW)
-    stroke(0)
-    line(centerX - objSize / 2, centerY, centerX + objSize / 2, centerY)
-    line(centerX, centerY - objSize / 2, centerX, centerY + objSize / 2)
-
-noLoop()
-setTimeout(function () {
-    sendSequenceNextSignal()
-}, 2000);
-  
-
-    break;
-    }
-    };
+};
 

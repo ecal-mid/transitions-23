@@ -29,15 +29,10 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-window.mouseClicked = function () {
-    started = true;
-
-
-}
 window.mousePressed = function () {
     angleWhenClicked = angle;
     speed = 0;
-
+    started = true;
 }
 window.draw = function () {
 
@@ -70,9 +65,10 @@ window.draw = function () {
                     soundPlayed2 = false;
 
                 }
+                speed = max(speed, -200);
 
             } else {
-                force = max(-(angle - angleWhenClicked) * 10, 0);
+                force = max(-(angle - angleWhenClicked) * 5, 0);
                 soundEffect2.stop();
                 if (soundPlayed2 == false) {
                     soundEffect1.play();
@@ -82,7 +78,6 @@ window.draw = function () {
             }
 
             speed += force * deltaTime / 1000;
-            speed = max(speed, -200);
             angle += speed * deltaTime / 1000;
 
             break;
@@ -97,25 +92,23 @@ window.draw = function () {
     stroke(0)
     rotate(angle);
     let maxAngle = asin(strokeW / (objSize / 2));
-    let distanceLines = min(speed * 0.01, maxAngle);
-    let lineCount = 18
+    let distanceLines = min(abs(speed * 0.01), maxAngle) * Math.sign(speed);
+    let lineCount = 23
     let totalAngleLines = distanceLines * lineCount;
+    growing = lerp(growing, totalAngleLines >= 80 ? 1 : 0, 0.05);
+
+    const offset = map(growing, 0, 1, 0, -strokeW / 2)
     for (let i = 0; i <= lineCount; i++) {
 
-        line(0 - objSize / 2, 0, 0 + objSize / 2, 0)
-        line(0, 0 - objSize / 2, 0, 0 + objSize / 2)
+        line(0 - objSize / 2 - offset, 0, 0 + objSize / 2 + offset, 0)
+        line(0, 0 - objSize / 2 - offset, 0, 0 + objSize / 2 + offset)
         rotate(-distanceLines);
     }
-    //console.log(totalAngleLines);
 
-    if (totalAngleLines >= 75) {
-        fill(0)
-        noStroke()
-        growing += 0.7;
-        circle(0, 0, constrain(growing, 0, objSize + 10));
-        // console.log(growing);
-    }
-    if (growing > objSize + 5) {
+    fill(0)
+    noStroke()
+    circle(0, 0, growing * objSize);
+    if (growing >= 0.999) {
         soundEffect2.stop();
         soundEffect1.stop();
         sendSequenceNextSignal(); // finish sketch

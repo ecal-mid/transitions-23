@@ -51,7 +51,7 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight)
 }
 
-window.mouseClicked = function () {
+window.mousePressed = function () {
     if (!slingshotExists) {
         setTimeout(() => {
             slingshot = new SlingShot((centerX - objSize / 2) / 2, centerY, strokeW)
@@ -73,8 +73,17 @@ window.draw = function () {
     dragManager.update()
     drawCircle()
 
+    if (slingshot)
+        slingshot.positionOrigin.x = (centerX - objSize / 2) / 2;
+
     let outCount = 0
     corners.forEach(c => {
+
+        if (!c.falling) {
+            c.position.x = centerX
+            c.position.y = centerY
+            c.size = objSize / 2
+        }
         c.update()
         c.display()
         if (c.out) {
@@ -210,7 +219,7 @@ class SlingShot {
                     this.reset()
                 }, 300)
             }
-        } else if (this.grab){
+        } else if (this.grab) {
             this.trajectory()
         }
     }
@@ -268,9 +277,9 @@ class Corner {
         fill(this.color)
         noStroke()
 
-        let a = 1.00005519
-        let b = 0.55342686
-        let c = 0.99873585
+        let a = .999// 1.00005519
+        let b = 0.55342686 * .98
+        let c = .999// 0.99873585
 
         let p0 = { x: 0, y: a * this.size }
         let p1 = { x: b * this.size, y: c * this.size }
@@ -318,7 +327,7 @@ class Corner {
         if (this.falling && !this.out) {
             this.fallingRotation += 0.1
 
-            if (this.position.y > height + this.size + 10) {
+            if (this.position.y > height + this.size + 30) {
                 this.out = true
             }
 

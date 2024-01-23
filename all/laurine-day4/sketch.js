@@ -152,7 +152,7 @@ window.draw = function () {
     }
 }
 
-window.mouseClicked = function () {
+window.mousePressed = function () {
 
 
     if (!isMoving) {

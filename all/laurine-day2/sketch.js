@@ -2,9 +2,6 @@
 import { SpringNumber } from "../../shared/spring.js"
 import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
 
-let finished = false
-
-
 
 let shapeId = 0
 let triangles = []
@@ -53,7 +50,9 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-window.mouseClicked = function () {
+
+
+window.mousePressed = function () {
     shapeId++
     shapeId %= 2
 
@@ -70,7 +69,7 @@ window.mouseClicked = function () {
             break;
         case 1: // Rotate
             rotateSpring.target = 45;
-            strokeSpring.target = 0
+            strokeSpring.target = 2
             state++;
             break;
         case 2:
@@ -78,12 +77,14 @@ window.mouseClicked = function () {
             // Calculate the scaling factor to fill the square based on the rotated cross
             const scaleFactor = diagonal / objSize;
             scaleSpring.target = scaleFactor;
-            state++;
-            setTimeout(() => {
+
+            if (Math.abs(scaleSpring.position - scaleSpring.target) < .01 &&
+                Math.abs(scaleSpring.velocity) < .1) {
                 sendSequenceNextSignal(); // finish sketch
                 noLoop();
+                state++;
+            }
 
-            }, "3000");
             break;
     }
 }
@@ -191,18 +192,10 @@ class Triangle {
         // Ensure the angle is positive
         if (angle < 0) {
             angle += 360;
-            fill(this.color)
-        }
-        else {
-
-            fill(this.activeColor);
         }
 
-        if (angle > this.rotation && angle < this.rotation + 90)
-
-        //if (!this.animate && mouseX > this.positionX && mouseX < this.positionX + objSize / 2 && mouseY > this.positionY && mouseY < this.positionY + objSize / 2) {
-        {
-            this.animate = !this.animate;
+        if (angle > this.rotation && angle < this.rotation + 90) {
+            this.animate = true;
             this.firstSpring.target = objSize / 2;
         }
     }

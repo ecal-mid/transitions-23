@@ -29,7 +29,6 @@ const springScale = new SpringNumber({
 })
 
 window.preload = function () {
-  soundFormats('mp3', 'ogg', 'wav');
   mySound = loadSound("sounds/son1.wav")
 
 }
@@ -45,7 +44,7 @@ window.setup = function () {
   const centerX = width / 2
   const centerY = height / 2
   const objSize = sceneSize / 2
-  const strokeW = objSize / 20
+  const strokeW = 20
   const crossRadius = objSize / 2
 
   // Loop through rows and columns to create circle objects with random start positions
@@ -128,7 +127,7 @@ window.draw = function () {
   const centerX = width / 2
   const centerY = height / 2
   const objSize = sceneSize / 2
-  const strokeW = objSize / 20
+  const strokeW = 20
   const crossRadius = objSize / 2
 
   for (let circle of circles) {
@@ -172,6 +171,7 @@ window.draw = function () {
   }
   background(255); // Clear the canvas on each frame
   fill(0);
+  noStroke()
   for (let circle of circles) {
 
 
@@ -181,6 +181,7 @@ window.draw = function () {
   push()
 
 
+  stroke(0)
   strokeWeight(strokeW);
   translate(crossCenterX, crossCenterY);
   scale(xScale)

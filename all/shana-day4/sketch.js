@@ -61,7 +61,7 @@ window.setup = function () {
 
   //console.log(objSize);
 
-  let spacing = 20; // Adjust the spacing as needed
+  let spacing = 10; // Adjust the spacing as needed
 
   for (let x = 0; x <= width; x += spacing) {
     for (let y = 0; y <= height; y += spacing) {
@@ -155,7 +155,8 @@ window.draw = function () {
   //     point.display();
   //   });
 
-  if (springSize.position == objSize) {
+  if (Math.abs(springSize.position - objSize) < 0.1 &&
+    Math.abs(springSize.velocity) < 0.1) {
     // colorChange = lerp(colorChange, 0, springSize.position);
     sendSequenceNextSignal(); // finish sketch
     noLoop();

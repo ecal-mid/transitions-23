@@ -73,27 +73,27 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight)
 }
 
-window.mouseClicked = function () {
-    gridPoints.forEach(p => {
-        if (p.isMe(mouseX, mouseY) && !p.falling) {
-            p.click()
-        }
-    })
+window.mousePressed = function () {
 }
 
 window.draw = function () {
     let cursorType = ARROW
     gridPoints.forEach(p => {
-    
+
         if (p.isMe(mouseX, mouseY)) {
             cursorType = HAND
         }
-        
+
     })
     cursor(cursorType)
 
     background(255)
 
+    gridPoints.forEach(p => {
+        if (p.isMe(mouseX, mouseY) && !p.falling) {
+            p.click()
+        }
+    })
 
     sceneSize = min(width, height)
     centerX = width / 2

@@ -28,9 +28,6 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-window.mouseClicked = function () {
-
-}
 
 let actualSize = 1;
 let mousePressed = false;
@@ -146,7 +143,8 @@ window.draw = function () {
     line(0 - actualSize / 2, 0, 0 + actualSize / 2, 0);
     line(0, 0 - actualSize / 2, 0, 0 + actualSize / 2);
 
-    if (xPosNew == centerX && yPosNew == centerY) {
+    if (Math.abs(xPosNew - centerX) < 0.1 &&
+        Math.abs(yPosNew - centerY) < 0.1) {
         sendSequenceNextSignal(); // finish sketch
         noLoop();
     }

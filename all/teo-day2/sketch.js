@@ -4,19 +4,19 @@ import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
 
 
 const spring = new SpringNumber({
-	position: 0, // start position
-	frequency: 1.5, // oscillations per second (approximate)
-	halfLife: 0.15 // time until amplitude is halved
+    position: 0, // start position
+    frequency: 1.5, // oscillations per second (approximate)
+    halfLife: 0.15 // time until amplitude is halved
 })
 
-const spring2 = new SpringNumber({ 
-    position: window.innerWidth/2, // start position
+const spring2 = new SpringNumber({
+    position: window.innerWidth / 2, // start position
     frequency: 10.5, // oscillations per second (approximate)
     halfLife: 0.15 // time until amplitude is halved
 })
 
 const spring3 = new SpringNumber({
-    position: window.innerHeight/2, // start position
+    position: window.innerHeight / 2, // start position
     frequency: 10.5, // oscillations per second (approximate)
     halfLife: 0.15 // time until amplitude is halved
 })
@@ -25,12 +25,12 @@ let osc;
 
 
 
-let mouseClicked = false    
+let mouseClicked = false
 let shapeId = 0
 let change = false
 
-const positions = []; 
-const circles = []; 
+const positions = [];
+const circles = [];
 
 let pop;
 
@@ -69,23 +69,23 @@ window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-window.mouseClicked = function () {
+window.mousePressed = function () {
     mouseClicked = true
-    
- 
+
+
 }
 
 window.draw = function () {
 
 
     background(255);
-    fill(255,0,0)
+    fill(255, 0, 0)
 
 
 
     const sceneSize = min(width, height)
 
-   const centerX = width / 2
+    const centerX = width / 2
     const centerY = height / 2
     let objSize = sceneSize / 2
     const strokeW = 20
@@ -93,7 +93,7 @@ window.draw = function () {
 
     if (positions.length == 0) {
         change = true
-       }
+    }
     if (change) {
         noLoop();
         setTimeout(function () {
@@ -102,85 +102,85 @@ window.draw = function () {
     }
     switch (shapeId) {
         case 0:
-          
-           
-
-         
-                if (mouseIsPressed) {
-                    spring.target = 20;
-                   
-                } else {
-                    spring.target = objSize;
-                   
-                }
-             
-                spring.step(deltaTime / 1000);
-
-                const x = spring.position;
-              
-               
-
-                fill(0);
-                noStroke();
-                circle(centerX, centerY, x);
-
-
-
-if (x >= 19.5 && x <= 20.5) {
-   
-    shapeId++
-}
 
 
 
 
+            if (mouseIsPressed) {
+                spring.target = 20;
+
+            } else {
+                spring.target = objSize;
+
+            }
+
+            spring.step(deltaTime / 1000);
+
+            const x = spring.position;
 
 
-    fill(0)
-    noStroke()
-    circle(centerX, centerY, x);
-           
+
+            fill(0);
+            noStroke();
+            circle(centerX, centerY, x);
+
+
+
+            if (x >= 19.5 && x <= 20.5) {
+
+                shapeId++
+            }
+
+
+
+
+
+
+            fill(0)
+            noStroke()
+            circle(centerX, centerY, x);
+
             break;
 
         case 1:
 
 
-        fill(0)
-        noStroke()
-        
-        const pointSize = strokeW
-    
-        //   spring2.target = mouseX
-        //     spring3.target = mouseY
-    
-        spring2.step(deltaTime / 1000)
-        spring3.step(deltaTime / 1000)
-    
-      
-    
-       
-    
-       
-   
+            fill(0)
+            noStroke()
 
-        for (let i = 0; i < positions.length; i++) {
-            
-            const pos = positions[i];
-            const x = pos.x;
-            const y = pos.y;
-            const distance = dist(x, y, mouseX, mouseY);
+            const pointSize = strokeW
 
-            if (distance <100) {
+            //   spring2.target = mouseX
+            //     spring3.target = mouseY
 
-                spring2.target = x
-                spring3.target = y
-            } 
-
-            const xpos = spring2.position
-            const ypos = spring3.position
+            spring2.step(deltaTime / 1000)
+            spring3.step(deltaTime / 1000)
 
 
-                if (xpos >= x-30.5 && xpos <= x+30.5 && ypos >= y-30.5 && ypos <= y+30.5) {
+
+
+
+
+
+
+            for (let i = 0; i < positions.length; i++) {
+
+                const pos = positions[i];
+                const x = pos.x;
+                const y = pos.y;
+                const distance = dist(x, y, mouseX, mouseY);
+
+                if (distance < 100) {
+
+                    spring2.target = x
+                    spring3.target = y
+                }
+
+                const xpos = spring2.position
+                const ypos = spring3.position
+
+
+                if (xpos >= x - 30.5 && xpos <= x + 30.5 && ypos >= y - 30.5 && ypos <= y + 30.5) {
 
 
                     fill(0);
@@ -189,42 +189,42 @@ if (x >= 19.5 && x <= 20.5) {
                     circles.push(new Circle(x, y, pointSize));
                     positions.splice(i, 1);
 
-                      
-                    
+
+
                     pop.setVolume(0.5)
                     pop.play()
-                   
-                   
-                   
-               
+
+
+
+
                 }
 
-                
-            let cercle = new Circle(xpos, ypos, pointSize);
-            cercle.draw();
 
-        
-     }
-      
-     for (let i = 0; i < circles.length; i++) {
-        circles[i].draw();
-      
-    }
+                let cercle = new Circle(xpos, ypos, pointSize);
+                cercle.draw();
 
-  
-   
-    
-    //console.log(positions.length)
 
-  
+            }
+
+            for (let i = 0; i < circles.length; i++) {
+                circles[i].draw();
+
+            }
+
+
+
+
+            //console.log(positions.length)
+
+
             break;
 
-            
 
-        
-}
 
-        
+
+    }
+
+
 }
 
 

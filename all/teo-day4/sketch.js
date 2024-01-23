@@ -2,28 +2,16 @@ import { SpringNumber } from "../../shared/spring.js"
 import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
 
 const spring = new SpringNumber({
-	position: 0, // start position
-	frequency: 4.5, // oscillations per second (approximate)
-	halfLife: 0.15 // time until amplitude is halved
+    position: -120, // start position
+    frequency: 2.5, // oscillations per second (approximate)
+    halfLife: 0.05 // time until amplitude is halved
 })
-
-const spring1 = new SpringNumber({
-    position: 0, // start position
-    frequency: 1.0, // oscillations per second (approximate)
-    halfLife: 0.15 // time until amplitude is halved
-})
-
 const spring2 = new SpringNumber({
-    position: 0, // start position
-    frequency: 4.5, // oscillations per second (approximate)
-    halfLife: 0.15 // time until amplitude is halved
-})
-
-const spring3 = new SpringNumber({
     position: 0, // start position
     frequency: 1.5, // oscillations per second (approximate)
     halfLife: 0.15 // time until amplitude is halved
 })
+
 
 const spring4 = new SpringNumber({
     position: 0, // start position
@@ -38,10 +26,12 @@ let balls = [];
 let boundary1;
 let boundary2;
 let rot = 0;
-let flow = false
+let flow = undefined
 let robinet = false
+const xOffset = .2;
 
 let shapeId = 0
+let isClicking = false
 
 let img;
 
@@ -54,9 +44,10 @@ let squeak
 let water;
 let boing
 let gear;
+let x, y, imgWidth, imgHeight;
 
 window.preload = function () {
-    
+
     img = loadImage('tap.png')
     tap = loadSound('tap.mp3')
     squeak = loadSound('squeak.mp3')
@@ -65,14 +56,14 @@ window.preload = function () {
     gear = loadSound('gear.mp3')
 }
 
-window.setup = function (){
+window.setup = function () {
     createCanvas(windowWidth, windowHeight);
     const sceneSize = min(width, height)
 
     const centerX = width / 2
     const centerY = height / 2
     const objSize = sceneSize / 2
-    const strokeW = objSize / 20
+    const strokeW = 20
 
     fill(0)
     noStroke()
@@ -85,26 +76,26 @@ window.setup = function (){
     engine = Matter.Engine.create();
     world = engine.world;
     world.gravity.y /= 2; // Halve the gravity
-   
+
     Matter.Engine.run(engine);
 
     // Create static boundaries constrained to the center
-    boundary1 = new Boundary(centerX , centerY, 20, objSize+20, HALF_PI + rot);
-    boundary2 = new Boundary(centerX , centerY, 20, objSize+20, PI + rot);
-    
+    boundary1 = new Boundary(centerX, centerY, 20, objSize + 20, HALF_PI + rot);
+    boundary2 = new Boundary(centerX, centerY, 20, objSize + 20, PI + rot);
+
     // Create constraints to center
     let constraintOptions = {
         bodyA: boundary1.body,
-        pointB: { x: width/2, y: height/2 },
+        pointB: { x: width / 2, y: height / 2 },
         length: 0
     };
 
     let constraintOptions2 = {
         bodyA: boundary2.body,
-        pointB: { x: width/2, y: height/2 },
+        pointB: { x: width / 2, y: height / 2 },
         length: 0
     };
-    
+
     let constraint = Matter.Constraint.create(constraintOptions);
     let constraint2 = Matter.Constraint.create(constraintOptions2);
     Matter.World.add(world, constraint2);
@@ -118,14 +109,30 @@ window.windowResized = function () {
 }
 
 window.draw = function () {
-    background(255,255,255);
+    background(255, 255, 255);
 
     const sceneSize = min(width, height)
     const centerX = width / 2
     const centerY = height / 2
     const objSize = sceneSize / 2
-    const strokeW = objSize / 20
+    const strokeW = 20
 
+    const targetPos = (width - xOffset * width) / 2;
+    x = spring.position
+    y = height / 6 - 26 + 20;
+    imgWidth = img.width / 2.4
+    imgHeight = img.height / 2.4
+    const robinetClicked = mouseX > x - imgWidth / 2 &&
+        mouseX < x + imgWidth / 2 &&
+        mouseY > y - imgHeight / 2 &&
+        mouseY < y + imgHeight / 2;
+
+    if (robinetClicked) {
+        cursor('pointer')
+    }
+    else {
+        cursor('default')
+    }
     switch (shapeId) {
         case 0:
             fill(0)
@@ -136,78 +143,45 @@ window.draw = function () {
             line(centerX - objSize / 2, centerY, centerX + objSize / 2, centerY)
             line(centerX, centerY - objSize / 2, centerX, centerY + objSize / 2)
 
-          
 
-            window.mouseClicked = function () {
-             
-            
-                if  (mouseX > 0 && mouseX < 100 && mouseY > height/6-26 && mouseY < height/6+24) {
-                    robinet = true;
-                    tap.play()
-                    tap.setVolume(3)
-                   
-                   
-                }
-            }
-         
-          
+
             if (robinet) {
-                spring.target = width/2.4
-         
-            } else {
-                spring.target = 0
-            }
+                spring.target = targetPos
 
-            if (mouseButton === LEFT) {
-              
-            spring4.target = 100
             }
 
 
-            spring.step(deltaTime / 1000) 
-            spring4.step(deltaTime / 1000)
+            const tolerance = 0.1; // Adjust the tolerance as needed
 
-            const x = spring.position
-            const b = spring4.position
-
-            strokeWeight(12)
-            translate(-100+b,0)
-            line(-100, height/6, x+20 , height/6)
-
-            imageMode(CENTER)
-           
-            image(img, x+58, height/6-26+20,183/2.4,119/2.4);
-
-            const tolerance = 0.001; // Adjust the tolerance as needed
-
-            if (Math.abs(x - width/2.4) < tolerance) {
+            if (Math.abs(x - targetPos) < tolerance) {
                 shapeId++;
             }
             break;
 
         case 1:
-            strokeWeight(12)
-         
+
 
             Matter.Engine.update(engine);
 
-            window.mouseClicked = function () {
-                if  (mouseX > width/2.4+40 && mouseX < width/2.4+160 && mouseY > height/6-46 && mouseY < height/6+44) {
-                    flow = true;
-                    squeak.play()
-                    water.play()
-                }
-            }
 
             if (flow) {
                 // Limit the rate of ball creation
-                let ball = new Ball(width/2.14-3, 193, 5);
+                let ball = new Ball(x + 35, y + 30, 5);
                 balls.push(ball);
             }
 
             if (!flow) {
-               water.stop()
-               
+                water.stop()
+
+            }
+
+            if (flow === false) {
+
+                spring.target = -imgWidth / 2;
+            }
+            if (flow !== undefined && balls.length == 0) {
+
+                shapeId++;
             }
 
             // Display and check boundaries for each ball
@@ -225,97 +199,129 @@ window.draw = function () {
             // Display static boundaries
             boundary1.show();
             boundary2.show();
-            line(0, height/6, width/2.4+20 , height/6)
-            image(img, width/2.4+58, height/6-26+20,183/2.4,119/2.4);
-
 
             break;
 
         case 2:
-           
-        fill(0)
-        noStroke()
-        rectMode(CENTER)
-        strokeWeight(20)
-        stroke(0)
-     
-        line(centerX, centerY - objSize / 2, centerX, centerY + objSize / 2)
 
-        
-      
-        if (!flow) {
-            spring1.target = width/2.4
-             
-        } else {
-            spring1.target = 0
-        }
+            fill(0)
+            noStroke()
+            rectMode(CENTER)
+            strokeWeight(20)
+            stroke(0)
 
-       
+            const target1 = getAngleTarget(boundary1.body.angle)
+            const target2 = getAngleTarget(boundary2.body.angle)
+            boundary1.body.angle = lerp(boundary1.body.angle, target1, 0.01)
+            boundary2.body.angle = lerp(boundary2.body.angle, target2, 0.01)
+            boundary1.show();
+            boundary2.show();
 
-        spring1.step(deltaTime / 1000) 
-
-       const y = spring1.position
-
-        strokeWeight(12)
-        line(0, height/6, width/2.4+20-y , height/6)
-        image(img, width/2.4+58-y, height/6-26+20, 183/2.4,119/2.4);
-
-      if (y > 746) {
-        shapeId++;
-        }
-
-        //console.log(y)
-
-        break;
+            if (Math.abs(boundary1.body.angle - target1) < .01 &&
+                Math.abs(boundary2.body.angle - target2) < .01) {
+                shapeId++;
+            }
+            break;
 
         case 3:
             fill(0)
-        noStroke()
-        rectMode(CENTER)
-        strokeWeight(20)
-     
-      
-     
-        window.mouseClicked = function () {
-            spring2.target = objSize-20
-            spring3.target = 30
-            boing.play()
-            boing.setVolume(1.5)
-        }
+            noStroke()
+            rectMode(CENTER)
+            strokeWeight(20)
 
-      
 
-        spring2.step(deltaTime / 1000)
-        spring3.step(deltaTime / 1000)
 
-        const z = spring2.position
-        const a = spring3.position
-        let roundness = abs(30-a)
-     
-        stroke(0)
-        noStroke()
-        rect(centerX, centerY, 20+z, objSize, roundness);
+            spring2.step(deltaTime / 1000)
 
-    
-    if (roundness < 1) {
-        setTimeout(function () {
-            sendSequenceNextSignal()
-        }, 1000);
-        }
+            let roundness = map(spring2.position, 0, 1, 20, 0)
+            let w = map(spring2.position, 0, 1, 20, objSize)
+            let h = map(spring2.position, 0, 1, objSize + 20, objSize)
 
-        
+            stroke(0)
+            noStroke()
+            rect(centerX, centerY, w, h, max(0, roundness));
 
-       
 
-        stroke(0)
-        strokeWeight(12)
-        translate(intStart-a*4,0)
-        line(0, height/6, 20 , height/6)
-        image(img, 58, height/6-26+20, 183/2.4,119/2.4);
-        
+            if (roundness < 1) {
+                sendSequenceNextSignal()
+                noLoop();
+            }
 
-        break;
+
+
+            break;
     }
+
+
+    spring.step(deltaTime / 1000)
+
+
+    strokeWeight(12)
+    push()
+    translate(-imgWidth / 2, 6)
+    line(x, y, x - 1000, y)
+    pop()
+    imageMode(CENTER)
+    image(img, x, y, imgWidth, imgHeight);
+}
+
+
+window.mousePressed = function () {
+
+    const robinetClicked = mouseX > x - imgWidth / 2 &&
+        mouseX < x + imgWidth / 2 &&
+        mouseY > y - imgHeight / 2 &&
+        mouseY < y + imgHeight / 2;
+
+    if (robinetClicked) {
+        isClicking = true;
+    }
+    switch (shapeId) {
+        case 0:
+            if (isClicking) {
+                robinet = true;
+
+                if (!tap.isPlaying()) {
+                    tap.play()
+                    tap.setVolume(3)
+                }
+
+
+            }
+            spring.target = img.width / 2
+            break;
+
+
+        case 1:
+            break
+
+        case 3:
+
+            spring2.target = 1
+            if (!boing.isPlaying()) {
+                boing.play()
+                boing.setVolume(1.5)
+            }
+            break
+    }
+}
+
+window.mouseReleased = function () {
+
+    switch (shapeId) {
+        case 1:
+            if (isClicking) {
+                flow = !flow;
+                squeak.play()
+                if (flow) {
+
+                    water.play()
+                }
+            }
+            break;
+    }
+
+    isClicking = false;
 }
 
 class Ball {
@@ -332,9 +338,9 @@ class Ball {
         push();
         translate(pos.x, pos.y);
         rotate(angle);
-        fill(119,181,254);
+        fill(119, 181, 254);
         noStroke();
-        ellipse(0, 0, this.radius *3 );
+        ellipse(0, 0, this.radius * 3);
         pop();
     }
 
@@ -367,7 +373,7 @@ class Boundary {
             friction: 0,
             restitution: 0.9,
             angle: a,
-       
+
             isStatic: s
         };
 
@@ -393,25 +399,25 @@ class Boundary {
         fill(0);
         rect(0, 0, this.w, this.h, 30);
         pop();
-
-        if (Math.abs(this.body.angle) < 0.05) {
-            flow = false;
-            let allBallsOffScreen = true;
-            for (let i = 0; i < balls.length; i++) {
-                if (!balls[i].isOffScreen()) {
-                    allBallsOffScreen = false;
-                    break;
-                }
-            }
-            
-            if (allBallsOffScreen) {
-                shapeId++;
-            }
-            
-        }
     }
 
-   
+
 }
 
+function getAngleTarget(angle) {
 
+    const rounded = Math.round(angle / Math.PI) * Math.PI
+    let diff = repeat(rounded - angle, Math.PI * 2)
+    if (diff > Math.PI)
+        diff -= Math.PI * 2
+
+    return angle + diff
+}
+
+function repeat(value, repeatValue) {
+
+    let mod = value % repeatValue
+    if (mod < 0)
+        mod += repeatValue
+    return mod
+}

@@ -9,19 +9,18 @@ export class MiniCircle {
         this.springX = new SpringNumber({
             position: x,
             frequency: 2,
-            halfLife: .5
+            halfLife: .2
         });
         this.springY = new SpringNumber({
             position: y,
             frequency: 2,
-            halfLife: .5
+            halfLife: .2
         });
         this.isActive = false;
         this.isCrossActive = false;
         this.arrived = false;
         this.radius = 10;
         this.color = color(random(255), random(255), random(255));
-        this.activeColor = color(0);
     }
     update(deltaTimeSeconds) {
 
@@ -30,23 +29,19 @@ export class MiniCircle {
     }
 
     display() {
-        noStroke()
-        if (this.isActive)
-            fill(this.color)
-        else
-            fill(0)
-        ellipse(this.springX.position, this.springY.position, this.radius * 2, this.radius * 2);
 
         if (this.isCrossActive) {
 
-            fill(this.activeColor);
             setTimeout(() => {
                 this.arrived = true;
             }, "3000");
         }
-
+        noStroke()
+        if (this.isCrossActive || !this.isActive)
+            fill(0)
         else
             fill(this.color)
+
         ellipse(this.springX.position, this.springY.position, this.radius * 2, this.radius * 2);
     }
 

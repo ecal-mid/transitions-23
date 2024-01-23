@@ -26,7 +26,7 @@ window.preload = function () {
 
 
 }
-window.mouseClicked = function () {
+window.mousePressed = function () {
     mousePressed = true;
     started = true;
     currentScale.target = 1;

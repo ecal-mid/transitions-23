@@ -97,10 +97,10 @@ window.draw = function () {
     // if (mouseDistanceToCenter.mag() < 100 && mouseIsPressed) {
     //     startTransition = true;
     // }
-    if (mouseDistanceToCenter.mag() < 100 ) {
+    if (mouseDistanceToCenter.mag() < 100) {
         startPlayTransition = true;
     }
-    if ( abs(offsetX) > 2.8 && abs(offsetX) > 2.8) {
+    if (abs(offsetX) > 2.8 && abs(offsetX) > 2.8) {
         //console.log("stop transition");
         springOffsetX.target = 3;
         springOffsetY.target = 3;
@@ -112,7 +112,7 @@ window.draw = function () {
         if (abs(offsetX - 3) < 0.01 && abs(offsetY - 3) < 0.01) {
             sendSequenceNextSignal(); // finish sketch
             //console.log("finish sketch");
-		    noLoop();
+            noLoop();
         }
     }
 
@@ -121,23 +121,23 @@ window.draw = function () {
 
     gridX = 5;
     gridY = 5;
-        // gridY = int(map(mouseY, 0, height, 4, 10));
-        // gridX = int(map(mouseX, 0, width, 4, 10));
+    // gridY = int(map(mouseY, 0, height, 4, 10));
+    // gridX = int(map(mouseX, 0, width, 4, 10));
 
     if (startTransition) {
         //console.log("start transition");
 
         springOffsetX.position = offsetX;
-        springOffsetY.position = offsetY; 
+        springOffsetY.position = offsetY;
 
         //do the lerp first
         springOffsetX.step(deltaTime / 1000);
         offsetX = springOffsetX.position;
 
         // console.log(offsetY, springOffsetY.target-0.05);
-        
+
         //then wait till the X value is near to do the Y
-        if (offsetY > springOffsetY.target-0.05) {
+        if (offsetY > springOffsetY.target - 0.05) {
             springOffsetY.target = 3;
             springOffsetY.step(deltaTime / 1000);
             offsetY = springOffsetY.position;
@@ -151,7 +151,7 @@ window.draw = function () {
         let y = mouseDistanceToCenter.y;
 
         //map the mouse distance to the center to the spring target to offset the grid
-        let maximumMvmt = map( pow( map(mouseMovedAmount, 0, 20000, 0, 1,true),3),0,1,0.2,3);
+        let maximumMvmt = map(pow(map(mouseMovedAmount, 0, 20000, 0, 1, true), 3), 0, 1, 0.2, 3);
         springPlayX.target = map(x, -width / 2, width / 2, -maximumMvmt, maximumMvmt);
         springPlayY.target = map(y, -height / 2, height / 2, -maximumMvmt, maximumMvmt);
 
@@ -287,7 +287,7 @@ function drawDots(ctx) {
     const centerY = height / 2;
     const objSize = sceneSize / 2;
     const halfWidth = objSize / tan(60);
-    const strokeW = 20 * (sceneSize / 1000);
+    const strokeW = 20;
     fill("red");
     noStroke();
     const gridCount = 5;
@@ -329,5 +329,5 @@ window.mouseMoved = function () {
         let distance = dist(pmouseX, pmouseY, mouseX, mouseY);
         mouseMovedAmount += distance;
     }
-    
+
 }

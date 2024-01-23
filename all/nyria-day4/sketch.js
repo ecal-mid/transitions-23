@@ -14,7 +14,7 @@ window.setup = function () {
   const centerX = width / 2;
   const centerY = height / 2;
   const gridCount = 5;
-  let strokeW = objSize / 20;
+  let strokeW = 20;
 
   const cellSize = objSize / gridCount;
   for (let x = 0; x < gridCount; x++) {

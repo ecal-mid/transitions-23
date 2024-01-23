@@ -2,22 +2,6 @@ import { SpringNumber, createSpringSettings } from "../../shared/spring.js"
 
 import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
 
-let finished = false
-
-
-window.mouseClicked = function () {
-
-}
-
-window.draw = function () {
-
-    background(255, 0, 0);
-    if (finished) {
-        sendSequenceNextSignal(); // finish sketch
-        noLoop();
-    }
-
-}
 let spring
 let squareSize = 0;
 let state = 0;
@@ -96,11 +80,6 @@ window.mousePressed = function () {
 
     if (allLocked && !endClicked) {
         endClicked = true
-        setTimeout(() => {
-            sendSequenceNextSignal(); // finish sketch
-            noLoop();
-
-        }, "3000");
 
         for (const corner of corners) {
 
@@ -159,6 +138,7 @@ window.draw = function () {
     const mouseDistOffset = max(0, mouseDist - clickMouseDist)
 
 
+    let allCornersOutOfscreen = true
     for (let i = 0; i < corners.length; i++) {
 
         const corner = corners[i]
@@ -191,10 +171,18 @@ window.draw = function () {
 
             }
         }
+        if (corner.springY.position < height)
+            allCornersOutOfscreen = false
+
         corner.springX.step(deltaTime / 1000)
         corner.springY.step(deltaTime / 1000)
 
         vertex(corner.springX.position, corner.springY.position)
+    }
+
+    if (allCornersOutOfscreen && endClicked) {
+        sendSequenceNextSignal(); // finish sketch
+        noLoop();
     }
     endShape()
     allLocked = corners.every(corner => corner.locked)

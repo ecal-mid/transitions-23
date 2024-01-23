@@ -28,7 +28,7 @@ window.draw = function () {
 
   const centerX = width / 2;
   const centerY = height / 2;
-  const strokeW = objSize / 20;
+  const strokeW = 20;
 
   background(255);
   fill(0);
@@ -56,7 +56,7 @@ window.draw = function () {
     }
 
     let drop = new RainDrop(dropX, -10);
-    sound1.play();
+    sound1.play(undefined, undefined, 0.4);
     drops.push(drop);
   }
 

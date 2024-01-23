@@ -13,22 +13,22 @@ let shapes = [];
 let shapesBottom = [];
 const rectSize = 30;
 let grid;
-const strokeW = 30;
+const strokeW = 20;
 let lastShapeTime = 0;
 const shapePlacementInterval = 0;
 let isMousePressed = false;
-let leftGrid,rightGrid;
-let bottomLeftGrid,bottomRightGrid;
+let leftGrid, rightGrid;
+let bottomLeftGrid, bottomRightGrid;
 let crossRotationAngle = 0;
 let crossEndSize = 1;
 let crossEndSizeTarget = 1;
-let shouldRotate=false; // flag to trigger only once //rotation of canvas 
+let shouldRotate = false; // flag to trigger only once //rotation of canvas 
 const springRotation = new SpringNumber({
     position: 0, // start position
     frequency: 0.4, // oscillations per second (approximate)
     halfLife: 0.5 // time until amplitude is halved
-    
-}) 
+
+})
 const rectSpring = new SpringNumber({
     position: 0, // Start position
     frequency: 0.5, // Oscillations per second (approximate)
@@ -46,15 +46,15 @@ window.setup = function () {
     createCanvas(windowWidth, windowHeight);
     angleMode(DEGREES);
     noStroke();
-    centerX= width / 2,
-    centerY= height / 2,
-    objSize= min(windowWidth, windowHeight) / 2
- 
+    centerX = width / 2,
+        centerY = height / 2,
+        objSize = min(windowWidth, windowHeight) / 2
+
     const gridSize = objSize / 2 - strokeW / 2;
     leftGrid = new Grid(centerX - objSize / 2, centerY - objSize / 2, gridSize, gridSize, 10, 10);
-    rightGrid = new Grid(centerX+15, centerY - objSize / 2, gridSize, gridSize, 10, 10); // Adjusted position for right grid
+    rightGrid = new Grid(centerX + strokeW / 2, centerY - objSize / 2, gridSize, gridSize, 10, 10); // Adjusted position for right grid
     bottomLeftGrid = new Grid(centerX - objSize / 2, centerY - objSize / 2, gridSize, gridSize, 10, 10);
-    bottomRightGrid = new Grid(centerX+15, centerY - objSize / 2, gridSize, gridSize, 10, 10); // Adjusted position for right grid
+    bottomRightGrid = new Grid(centerX + strokeW / 2, centerY - objSize / 2, gridSize, gridSize, 10, 10); // Adjusted position for right grid
 
 };
 
@@ -97,7 +97,7 @@ function placeShape() {
         if (row !== undefined) {
             let position = grid.getSlotPosition(column, row);
             let shape = new Shape(
-                position.x, 
+                position.x,
                 position.y,
                 slotSize.width,
                 slotSize.height,
@@ -121,7 +121,7 @@ function placeShapeInBottomGrids() {
         if (row !== undefined) {
             let position = grid.getSlotPosition(column, row);
             let shape = new Shape(
-                position.x, 
+                position.x,
                 position.y,
                 slotSize.width,
                 slotSize.height,
@@ -159,95 +159,95 @@ class Shape {
         strokeWeight(1);
         const extensionX = this.xEnd ? 0 : 1;
         const extensionY = this.yEnd ? 0 : 1;
-        
-        rect(this.x, this.y, this.width+extensionX, this.height+extensionY);
+
+        rect(this.x, this.y, this.width + extensionX, this.height + extensionY);
     }
 }
 
-class Grid{
-    constructor(x, y, width, height, gridCountX,gridCountY) {
-        
+class Grid {
+    constructor(x, y, width, height, gridCountX, gridCountY) {
+
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.gridCountX = gridCountX;
         this.gridCountY = gridCountY;
-        this.slots = Array.from({length: gridCountX*gridCountY}, () => undefined);
+        this.slots = Array.from({ length: gridCountX * gridCountY }, () => undefined);
 
-        
+
     }
     isFull() {
-        return this.slots.every(slot => slot !== undefined && slot.y>=slot.targetY);
+        return this.slots.every(slot => slot !== undefined && slot.y >= slot.targetY);
     }
-    getGridColumnForXposition(x){
-        const slotWidth = this.width/this.gridCountX;
-        const column = floor((x-this.x)/slotWidth);
-        if(column<0 || column>=this.gridCountX){
+    getGridColumnForXposition(x) {
+        const slotWidth = this.width / this.gridCountX;
+        const column = floor((x - this.x) / slotWidth);
+        if (column < 0 || column >= this.gridCountX) {
             return undefined;
         }
 
         return column;
     }
 
-    getSlotSize(){
-        const slotWidth = this.width/this.gridCountX ; // problem with size of slot
-        const slotHeight = this.height/this.gridCountY;
-        return {width:slotWidth,height:slotHeight};
+    getSlotSize() {
+        const slotWidth = this.width / this.gridCountX; // problem with size of slot
+        const slotHeight = this.height / this.gridCountY;
+        return { width: slotWidth, height: slotHeight };
     }
 
-    getSlotPosition(x,y){
-        const slotWidth = this.width/this.gridCountX;
-        const slotHeight = this.height/this.gridCountY;
-        const xPos = this.x + x*slotWidth;
-        const yPos = this.y + y*slotHeight;
-        return {x:xPos,y:yPos};
+    getSlotPosition(x, y) {
+        const slotWidth = this.width / this.gridCountX;
+        const slotHeight = this.height / this.gridCountY;
+        const xPos = this.x + x * slotWidth;
+        const yPos = this.y + y * slotHeight;
+        return { x: xPos, y: yPos };
     }
 
-    getNextFreeRow(column){
+    getNextFreeRow(column) {
 
-        for(let y = this.gridCountY-1; y >= 0; y--){
-                const slot = this.getSlot(column,y);
-                if(slot===undefined){
-                    return y;
-                }
-        }
-    }
-    getSlot(x,y){
-        return this.slots[x+y*this.gridCountX];
-
-    }
-    setSlot(x,y,value){
-        this.slots[x+y*this.gridCountX] = value;
-    }
-
-    draw(){
-        noStroke();
-        const slotWidth = this.width/this.gridCountX;
-        const slotHeight = this.height/this.gridCountY;
-        for(let x = 0; x < this.gridCountX; x++){
-            for(let y = 0; y < this.gridCountY; y++){
-                const xPos = this.x + x*slotWidth;
-                const yPos = this.y + y*slotHeight;
-                const slot = this.getSlot(x,y);
-                if(slot!==undefined){
-                    fill(125,125,125);
-                    const extensionX = x == this.gridCountX - 1 ? 0 : 1;
-                    const extensionY = y == this.gridCountY - 1 ? 0 : 1;
-                    
-                     rect(xPos,yPos,slotWidth+extensionX,slotHeight+extensionY);
-                   
-
-                }
-                
+        for (let y = this.gridCountY - 1; y >= 0; y--) {
+            const slot = this.getSlot(column, y);
+            if (slot === undefined) {
+                return y;
             }
         }
-   
     }
-    
+    getSlot(x, y) {
+        return this.slots[x + y * this.gridCountX];
+
+    }
+    setSlot(x, y, value) {
+        this.slots[x + y * this.gridCountX] = value;
+    }
+
+    draw() {
+        noStroke();
+        const slotWidth = this.width / this.gridCountX;
+        const slotHeight = this.height / this.gridCountY;
+        for (let x = 0; x < this.gridCountX; x++) {
+            for (let y = 0; y < this.gridCountY; y++) {
+                const xPos = this.x + x * slotWidth;
+                const yPos = this.y + y * slotHeight;
+                const slot = this.getSlot(x, y);
+                if (slot !== undefined && slot.y < slot.targetY) {
+                    fill(125, 125, 125);
+                    const extensionX = x == this.gridCountX - 1 ? 0 : 1;
+                    const extensionY = y == this.gridCountY - 1 ? 0 : 1;
+
+                    rect(xPos, yPos, slotWidth + extensionX, slotHeight + extensionY);
+
+
+                }
+
+            }
+        }
+
+    }
+
 }
 function drawCross() {
-    strokeWeight(strokeW); // Set the stroke weight for the cross
+    strokeWeight(strokeW + 2); // Set the stroke weight for the cross
     stroke(0); // Set the stroke color (black)
     strokeCap(SQUARE); // Set the line caps to square (instead of round
 
@@ -259,11 +259,11 @@ function drawCross() {
 
     noStroke()
     fill(0)
-    ellipse(centerX, centerY- objSize / 2, strokeW,strokeW*crossEndSize);
-    ellipse(centerX, centerY+ objSize / 2, strokeW,strokeW*crossEndSize); 
-    ellipse(centerX- objSize / 2, centerY, strokeW*crossEndSize,strokeW);
-    ellipse(centerX+ objSize / 2, centerY, strokeW*crossEndSize,strokeW);
-}   
+    ellipse(centerX, centerY - objSize / 2, strokeW + 1, strokeW * crossEndSize);
+    ellipse(centerX, centerY + objSize / 2, strokeW + 1, strokeW * crossEndSize);
+    ellipse(centerX - objSize / 2, centerY, strokeW * crossEndSize, strokeW + 1);
+    ellipse(centerX + objSize / 2, centerY, strokeW * crossEndSize, strokeW + 1);
+}
 window.draw = function () {
 
     if (bottomLeftGrid.isFull() && bottomRightGrid.isFull()) {
@@ -272,12 +272,12 @@ window.draw = function () {
             sendSequenceNextSignal(); // finish sketch
         }, 1500);
     }
-    
+
 
     background(255);
     springRotation.step(deltaTime / 1000);
 
-    crossEndSize = lerp(crossEndSize,crossEndSizeTarget,0.2)
+    crossEndSize = lerp(crossEndSize, crossEndSizeTarget, 0.2)
 
     if (leftGrid.isFull() && rightGrid.isFull() && !shouldRotate) {
         springRotation.target = 180;
@@ -285,8 +285,8 @@ window.draw = function () {
     }
     if (bottomLeftGrid.isFull() && bottomRightGrid.isFull()) {
         drawBigRectangle = true;
-        rectSpring.target = objSize; 
-       // sendSequenceNextSignal(); // finish sketch
+        rectSpring.target = objSize;
+        // sendSequenceNextSignal(); // finish sketch
     }
     // if (drawBigRectangle) {
     //     fill(0);
@@ -295,7 +295,7 @@ window.draw = function () {
     //     rect(centerX, centerY, objSize, objSize); 
     // }
 
- 
+
 
     push(); // Start transformation context
     translate(centerX, centerY);
@@ -317,7 +317,7 @@ window.draw = function () {
     if (shouldRotate) {
         push();
         rotate(180)
-       translate(-centerX, -centerY);
+        translate(-centerX, -centerY);
         bottomLeftGrid.draw();
         bottomRightGrid.draw();
         shapesBottom.forEach(shape => {

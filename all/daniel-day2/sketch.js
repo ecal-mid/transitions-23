@@ -24,30 +24,30 @@ let lineReleaseSound;
 let coolDownSound;
 
 const springCircle = new SpringNumber({
-	position: 500, // start position
-	frequency: 1.5, // oscillations per second (approximate)
-	halfLife: 0.1 // time until amplitude is halved
+  position: 500, // start position
+  frequency: 1.5, // oscillations per second (approximate)
+  halfLife: 0.1 // time until amplitude is halved
 })
 
 const springX = new SpringNumber({
-	position: window.innerWidth / 2, // start position
-	frequency: 1.5, // oscillations per second (approximate)
-	halfLife: 0.1 // time until amplitude is halved
+  position: window.innerWidth / 2, // start position
+  frequency: 1.5, // oscillations per second (approximate)
+  halfLife: 0.1 // time until amplitude is halved
 })
 
 const springY = new SpringNumber({
-	position: window.innerHeight / 2, // start position
-	frequency: 1.5, // oscillations per second (approximate)
-	halfLife: 0.1 // time until amplitude is halved
+  position: window.innerHeight / 2, // start position
+  frequency: 1.5, // oscillations per second (approximate)
+  halfLife: 0.1 // time until amplitude is halved
 })
 
 const springCol = new SpringNumber({
-	position: window.innerHeight / 2, // start position
-	frequency: 1.5, // oscillations per second (approximate)
-	halfLife: 0.1 // time until amplitude is halved
+  position: window.innerHeight / 2, // start position
+  frequency: 1.5, // oscillations per second (approximate)
+  halfLife: 0.1 // time until amplitude is halved
 })
 
-window.preload= function () {
+window.preload = function () {
   coolDownSound = createAudio("Audio/FinalSound.wav")
 }
 
@@ -61,78 +61,74 @@ window.setup = function () {
   sceneSize = min(width, height)
   objSize = sceneSize / 2;
 
+  springCircle.position = objSize;
+  springCircle.target = objSize;
+
   stageSketch2 = 0;
 }
 
 window.mousePressed = function () {
 
-  if(stageSketch2 == 1 || stageSketch2 == 2 || stageSketch2 == 3)
-  {
+  if (stageSketch2 == 1 || stageSketch2 == 2 || stageSketch2 == 3) {
     linePickSound.play();
   }
 
-}
-
-window.windowResized = function () {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
-window.mouseClicked = function (){
-  if(stageSketch2 == 0){
+  if (stageSketch2 == 0) {
     stageSketch2 = 1;
     sphereSound.play();
     springCircle.target = 20;
   }
 }
 
-window.mouseDragged = function (){
+window.windowResized = function () {
+  resizeCanvas(windowWidth, windowHeight);
+}
 
-  if(stageSketch2 == 2 || stageSketch2 == 3)
-  {
+
+window.mouseDragged = function () {
+
+  if (stageSketch2 == 2 || stageSketch2 == 3) {
     mouseDragState = true;
   }
   let d = dist(window.innerWidth / 2, window.innerHeight / 2, mouseX, mouseY);
-  if(d >= 300 && !figerTrait2){ 
+  if (d >= 300 && !figerTrait2) {
     zone = true;
     springCol.target = 1 * d / 2;
     //console.log(zone)
   }
-  else
-  {
+  else {
     springCol.target = 0;
     zone = false;
   }
 }
 
-window.mouseReleased = function (){ 
+window.mouseReleased = function () {
 
   let d = dist(window.innerWidth / 2, window.innerHeight / 2, mouseX, mouseY);
   zone = false;
   springCol.target = 0;
 
-  if(stageSketch2 == 2 || stageSketch2 == 3)
-  {
+  if (stageSketch2 == 2 || stageSketch2 == 3) {
     lineReleaseSound.play();
   }
-  
-  if(stageSketch2 == 2 && d >= 300){
+
+  if (stageSketch2 == 2 && d >= 300) {
     figerTrait1 = true;
     springX.position = window.innerWidth / 2;
     d = 0;
   }
-  else if(stageSketch2 == 3 && d >= 300){
+  else if (stageSketch2 == 3 && d >= 300) {
     figerTrait2 = true;
     stageSketch2 = 3;
-    if(finalSound == 0)
-    {
+    if (finalSound == 0) {
       setTimeout(() => {
-          coolDownSound.play();
+        coolDownSound.play();
       }, 500);
       finalSound = 1;
     }
     setTimeout(() => {
       noLoop();
-       sendSequenceNextSignal();
+      sendSequenceNextSignal();
     }, 1500);
     d = 0;
   }
@@ -159,50 +155,45 @@ window.draw = function () {
   springY.step(deltaTime / 1000) // deltaTime is in milliseconds, we need it in seconds
   springCircle.step(deltaTime / 1000) // deltaTime is in milliseconds, we need it in seconds
   springCol.step(deltaTime / 1000)
-	const x = springX.position
+  const x = springX.position
   const y = springY.position
   const sCircle = springCircle.position;
   const springC = springCol.position;
 
   //cross(centerX,centerY,strokeW);
 
-  switch(stageSketch2){
+  switch (stageSketch2) {
     case 0:
       //Cercle Statique
-      circleShape(centerX,centerY);
+      circleShape(centerX, centerY);
       break;
     case 1:
       //Cercle qui raptisse
-      circleShape(centerX,centerY);
-      setTimeout(function() {
+      circleShape(centerX, centerY);
+      setTimeout(function () {
         stageSketch2 = 2;
       }, 1000);
       break;
     case 2:
       //Déplacement des lignes Horizontales et Verticales
-      circleShape(centerX,centerY);
-      if(mouseDragState && !figerTrait1)
-      {
+      circleShape(centerX, centerY);
+      if (mouseDragState && !figerTrait1) {
         springY.target = mouseY
       }
-      else if(!mouseDragState && !figerTrait1)
-      {
+      else if (!mouseDragState && !figerTrait1) {
         springY.target = centerY
       }
-      if(figerTrait1)
-      {
+      if (figerTrait1) {
         springY.target = centerY + objSize / 2
-        setTimeout(function() {
+        setTimeout(function () {
           stageSketch2 = 3;
         }, 500);
       }
       push()
-      if(zone == true)
-      {
+      if (zone == true) {
         stroke(springC, 0, 0);
       }
-      else
-      {
+      else {
         stroke(springC, 0, 0);
       }
       strokeWeight(strokeW);
@@ -210,8 +201,8 @@ window.draw = function () {
       line(centerX, centerY, centerX, window.innerHeight - y);
       pop()
       break;
-      
-    case 3:{
+
+    case 3: {
 
       //console.log(x, springX.position, springX.target)
 
@@ -220,26 +211,21 @@ window.draw = function () {
       line(centerX, centerY - objSize / 2, centerX, centerY + objSize / 2)
       pop()
 
-      if(mouseDragState && !figerTrait2)
-      {
+      if (mouseDragState && !figerTrait2) {
         springX.target = mouseX
       }
-      else if(!mouseDragState && !figerTrait2)
-      {
+      else if (!mouseDragState && !figerTrait2) {
         springX.target = centerX
       }
-      if(figerTrait2)
-      {
+      if (figerTrait2) {
         springX.target = centerX - objSize / 2
       }
 
       push()
-      if(zone == true)
-      {
+      if (zone == true) {
         stroke(springC, 0, 0);
       }
-      else
-      {
+      else {
         stroke(springC, 0, 0);
       }
       strokeWeight(strokeW);
@@ -247,7 +233,7 @@ window.draw = function () {
       line(centerX, centerY, window.innerWidth - x, centerY);
       pop()
     }
-    case 4:{
+    case 4: {
       /*push()
       console.log(4);
       strokeWeight(strokeW);
@@ -256,10 +242,9 @@ window.draw = function () {
       pop()*/
     }
   }
-
 }
 
-function circleShape(x,y){
+function circleShape(x, y) {
 
   objSizeCircle = (sceneSize / 2) - differentiel;
 
@@ -267,7 +252,7 @@ function circleShape(x,y){
 
   //Cercle
   push()
-  fill(0,0,0)
+  fill(0, 0, 0)
   noStroke()
   translate(x, y);
   circle(0, 0, sCircle)
@@ -277,8 +262,8 @@ function circleShape(x,y){
 
 
 
-function cross(cX,cY,sW){
-  fill(255,0,0, 0.5)
+function cross(cX, cY, sW) {
+  fill(255, 0, 0, 0.5)
   noStroke()
   rectMode(CENTER)
   strokeWeight(sW)

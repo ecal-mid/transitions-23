@@ -48,7 +48,7 @@ window.draw = function () {
       y > height - diagonalSize) &&
     !soundPlayed
   ) {
-    sound1.play();
+    sound1.setVolume(1);
     soundPlayed = true;
   } else if (
     !(
@@ -58,7 +58,7 @@ window.draw = function () {
       y > height - diagonalSize
     )
   ) {
-    sound1.stop();
+    sound1.setVolume(0);
     soundPlayed = false;
   }
 
@@ -122,7 +122,7 @@ window.draw = function () {
     dist(x, y, centerX, centerY) < 1
   ) {
     done = true;
-    console.log("done");
+    //console.log("done");
     // sound1.play();
     noLoop();
     setTimeout(() => {
@@ -145,6 +145,7 @@ window.mousePressed = function () {
   if (!done && dist(mouseX, mouseY, x, y) < objSize / 2) {
     isDragging = true;
   }
+  sound1.loop();
 };
 
 window.mouseReleased = function () {

@@ -55,11 +55,6 @@ window.windowResized = function () {
 }
 
 
-window.mouseClicked = function () {
-
-}
-
-
 
 window.draw = function () {
 
@@ -98,7 +93,7 @@ window.draw = function () {
             circles[i].isActive = false;
 
         if (progress >= 1 &&
-            dist(mouseX, mouseY, circles[i].springX.position, circles[i].springY.position) < 100) {
+            dist(mouseX, mouseY, circles[i].springX.position, circles[i].springY.position) < 200) {
 
             circles[i].isCrossActive = true
         }
@@ -123,7 +118,8 @@ window.draw = function () {
 
 
     }
-    if (count == circles.length - 1) {
+
+    if (count >= circles.length - 1) {
         //console.log("count")
         if (!finished) {
             finished = true;

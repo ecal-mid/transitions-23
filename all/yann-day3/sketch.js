@@ -235,10 +235,6 @@ window.setup = function () {
   // angleMode(DEGREES);
 };
 
-window.mouseClicked = function () {
-  // shapeId++
-  // shapeId %= 4
-};
 
 window.draw = function () {
   background(255);

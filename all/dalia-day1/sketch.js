@@ -123,7 +123,7 @@ window.draw = function () {
   //}
 };
 
-window.touchStarted = function () {
+window.mousePressed = function () {
   //console.log("touchStarted");
   if (!played) {
     mySound.play(0, 1, 0);
