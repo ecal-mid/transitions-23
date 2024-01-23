@@ -64,9 +64,9 @@
       iframe {
         position: absolute;
         width: 100vw;
-        height: 100svh;
+        height: 100dvh;
         border: 0;
-
+        overflow: hidden;
         -webkit-user-select: none;
         -ms-user-select: none;
         user-select: none;
@@ -131,9 +131,11 @@
 
       .min-safe-h-screen {
         /* equivalent to 100dvh in major browsers */
+
+        /*
         min-height: calc(
           100vh - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0)
-        );
+        );*/
       }
 
       @supports (-webkit-touch-callout: none) {
