@@ -5,7 +5,7 @@ let finished = false
 window.setup = function () {
 	createCanvas(windowWidth, windowHeight)
 }
-window.mouseClicked = function () {
+window.mousePressed = function () {
 	finished = true;
 }
 

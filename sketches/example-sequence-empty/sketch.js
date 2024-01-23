@@ -6,7 +6,7 @@ let progress = 0;
 window.setup = function () {
   createCanvas(windowWidth, windowHeight);
 };
-window.mouseClicked = function () {
+window.mousePressed = function () {
   started = true;
 };
 
