@@ -60,6 +60,7 @@ export class SequenceRunner extends EventTarget {
 
     if (this.currentSequence) {
       this.currentSequence.iframe.style = "z-index:99";
+      this.currentSequence.iframe.contentWindow.focus()
       this.sequencesFiltered[this.currentSequence.sequenceId].count++
     }
 
