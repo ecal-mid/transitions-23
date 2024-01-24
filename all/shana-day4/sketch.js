@@ -14,7 +14,7 @@ let soundEffect;
 let soundEffect2;
 let soundPlayed = false;
 let soundPlayed2 = false;
-
+let rate = 0
 
 
 window.preload = function () {
@@ -45,6 +45,7 @@ class Point {
     pop();
   }
 }
+
 
 window.setup = function () {
   createCanvas(windowWidth, windowHeight);
@@ -77,12 +78,16 @@ window.windowResized = function () {
   resizeCanvas(windowWidth, windowHeight);
 };
 
-window.mouseDragged = function () {
-  if (!soundPlayed) {
-    soundPlayed = true; // Update the flag to indicate that the sound has been played
-    soundEffect.play(); // Play the sound
+window.mousePressed = function (){
+
+  if (!soundEffect.isPlaying()) {
     soundEffect.loop();
+    soundEffect.setVolume(0)
   }
+}
+
+window.mouseDragged = function () {
+
   // Check all the grid points and set active to true if the mouse is over it
   for (let i = 0; i < gridPoints.length; i++) {
     if (dist(mouseX, mouseY, gridPoints[i].x, gridPoints[i].y) < radius / 2) {
@@ -111,6 +116,12 @@ window.draw = function () {
   objSize = sceneSize / 2;
   springSize.step(deltaTime / 1000);
 
+  const mouseV = dist(mouseX,mouseY,pmouseX,pmouseY)
+
+  soundEffect.setVolume(map(mouseV,0,4,0,1,true))
+  const newrate = map(mouseV,1,10,.5,1,true)
+  rate = lerp(rate,newrate,0.5)
+  soundEffect.rate(rate)
 
   // SECOND LAYER (UNDERNEATH)
 
