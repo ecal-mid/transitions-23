@@ -98,7 +98,7 @@ window.setup = function () {
   angleMode(DEGREES);
   background(255);
 
-  mysound.play();
+//  mysound.play();
 
   const sceneSize = min(width, height);
   const centerX = width / 2;

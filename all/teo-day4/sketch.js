@@ -28,7 +28,6 @@ let boundary2;
 let rot = 0;
 let flow = undefined
 let robinet = false
-const xOffset = .2;
 
 let shapeId = 0
 let isClicking = false
@@ -117,11 +116,11 @@ window.draw = function () {
     const objSize = sceneSize / 2
     const strokeW = 20
 
-    const targetPos = (width - xOffset * width) / 2;
     x = spring.position
     y = height / 6 - 26 + 20;
     imgWidth = img.width / 2.4
     imgHeight = img.height / 2.4
+    const targetPos = width*0.5 - objSize/4 - imgWidth/2;
     const robinetClicked = mouseX > x - imgWidth / 2 &&
         mouseX < x + imgWidth / 2 &&
         mouseY > y - imgHeight / 2 &&
@@ -288,7 +287,7 @@ window.mousePressed = function () {
 
 
             }
-            spring.target = img.width / 2
+            spring.target = img.width / 2-50
             break;
 
 

@@ -8,7 +8,7 @@ let lastPointX;
 let lastPointY;
 let isDrawing = false;
 let Sound;
-let mouseXSpeed;
+let started = false;
 
 window.preload = function () {
   Sound = loadSound("./sound/squish.mp3");
@@ -24,7 +24,7 @@ window.setup = function () {
   const centerX = width / 2;
   const centerY = height / 2;
   const objSize = sceneSize / 2;
-  pg = createGraphics(objSize, objSize);
+  pg = createGraphics(Math.round(objSize), Math.round(objSize));
   pg.pixelDensity(1);
 
   Sound.setVolume(0);
@@ -38,6 +38,7 @@ window.windowResized = function () {
 window.mousePressed = function () {
   isDrawing = true;
   Sound.play();
+  started = true;
 };
 
 window.mouseReleased = function () {
@@ -49,8 +50,9 @@ window.mouseReleased = function () {
 };
 
 function soundEffect() {
-  mouseXSpeed = abs(pmouseX - mouseX);
-  var volume = map(mouseXSpeed, 0, 100, 0, 1);
+  let mouseXSpeed = abs(pmouseX - mouseX);
+  let mouseYSpeed = abs(pmouseY - mouseY);
+  let volume = map(mag(mouseXSpeed,mouseYSpeed), 0, 100, 0, 1);
   Sound.setVolume(volume);
 
   //console.log(volume);
@@ -73,7 +75,8 @@ window.draw = function () {
   rectMode(CENTER);
   strokeWeight(strokeW);
   stroke(0);
-  endCrossScale = lerp(endCrossScale, 0.965, 0.1);
+  if(started )
+    endCrossScale = lerp(endCrossScale, objSize/(objSize+strokeW), 0.1);
   line(
     centerX - (objSize / 2) * endCrossScale,
     centerY,

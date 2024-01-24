@@ -55,15 +55,7 @@ class Shape {
               positionX: point.vector.x,
               positionY: point.vector.y,
               radius: 40,
-            },
-            onStartDrag: (o) => {
-              cursor("grabbing");
-              //console.log("start drag :" + o);
-            },
-            onStopDrag: (o) => {
-              cursor("default");
-              //console.log("stop drag :" + o);
-            },
+            }
           }),
         });
       } else {
@@ -96,7 +88,15 @@ class Shape {
 
       point.springX.step(deltaTime / 1000);
       point.springY.step(deltaTime / 1000);
+
     });
+
+    if(this.pointsDrag.some(p=>p.grabObject && p.grabObject.isGrabbed))
+      cursor("grabbing")
+    else if(this.pointsDrag.some(p=>p.grabObject && p.grabObject.isOver))
+        cursor("grab")
+    else
+      cursor("default")
 
     // test all point if close to center within a certain radius
     this.pointsDrag.some((point, index) => {

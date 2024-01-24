@@ -56,7 +56,7 @@ window.mousePressed = function () {
         setTimeout(() => {
             slingshot = new SlingShot((centerX - objSize / 2) / 2, centerY, strokeW)
             slingshotExists = true
-        }, 300)
+        }, 500)
     }
 }
 

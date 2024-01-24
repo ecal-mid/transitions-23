@@ -1,4 +1,3 @@
-
 export class DragManager {
 
     constructor() {
@@ -6,7 +5,7 @@ export class DragManager {
         this.dragObjects = []
     }
 
-    createDragObject({ target, isOverlapping, onStartDrag, onStopDrag }) {
+    createDragObject({target, isOverlapping, onStartDrag, onStopDrag}) {
 
         const obj = {
             target: target,
@@ -14,6 +13,7 @@ export class DragManager {
             onStartDrag: onStartDrag,
             onStopDrag: onStopDrag,
             isGrabbed: false,
+            isOver: false
         }
         this.dragObjects.push(obj)
         return obj
@@ -21,6 +21,16 @@ export class DragManager {
 
     update() {
 
+        for (const obj of this.dragObjects) {
+
+            let overlapping
+            if (obj.isOverlapping)
+                overlapping = obj.isOverlapping(mouseX, mouseY)
+            else
+                overlapping = dist(obj.target.positionX, obj.target.positionY, mouseX, mouseY) < (obj.target.radius || 30)
+
+            obj.isOver = overlapping;
+        }
         if (this.currentDragObject) {
 
             // release object if not pressed
@@ -30,29 +40,20 @@ export class DragManager {
                 this.currentDragObject.isGrabbed = false
                 this.currentDragObject = undefined
             }
-        }
-        else {
+        } else {
             // try find newly grabbed object
             for (const obj of this.dragObjects) {
 
-                if (mouseIsPressed) {
+                if (mouseIsPressed && obj.isOver) {
 
-                    let overlapping
-                    if (obj.isOverlapping)
-                        overlapping = obj.isOverlapping(mouseX, mouseY)
-                    else
-                        overlapping = dist(obj.target.positionX, obj.target.positionY, mouseX, mouseY) < (obj.target.radius || 30)
+                    obj.isGrabbed = true
+                    obj.grabOffsetX = obj.target.positionX - mouseX
+                    obj.grabOffsetY = obj.target.positionY - mouseY
+                    this.currentDragObject = obj
+                    if (this.currentDragObject.onStartDrag)
+                        this.currentDragObject.onStartDrag(this.currentDragObject.target)
+                    break
 
-                    if (overlapping) {
-
-                        obj.isGrabbed = true
-                        obj.grabOffsetX = obj.target.positionX - mouseX
-                        obj.grabOffsetY = obj.target.positionY - mouseY
-                        this.currentDragObject = obj
-                        if (this.currentDragObject.onStartDrag)
-                            this.currentDragObject.onStartDrag(this.currentDragObject.target)
-                        break
-                    }
                 }
             }
         }
