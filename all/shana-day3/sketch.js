@@ -20,7 +20,7 @@ window.setup = function () {
 
     createCanvas(windowWidth, windowHeight);
     angleMode(DEGREES)
-    frameRate(120);
+    //frameRate(120);
 
 
 }
@@ -95,7 +95,7 @@ window.draw = function () {
     let distanceLines = min(abs(speed * 0.01), maxAngle) * Math.sign(speed);
     let lineCount = 23
     let totalAngleLines = distanceLines * lineCount;
-    growing = lerp(growing, totalAngleLines >= 80 ? 1 : 0, 0.05);
+    growing = lerp(growing, totalAngleLines >= 80 ? 1 : 0, 0.1);
 
     const offset = map(growing, 0, 1, 0, -strokeW / 2)
     for (let i = 0; i <= lineCount; i++) {
