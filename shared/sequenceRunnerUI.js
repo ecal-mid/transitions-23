@@ -1,5 +1,5 @@
 
-export async function initMenu(sequencePlayer) {
+export function initMenu(sequencePlayer) {
 
     const menu = document.getElementById("menu");
 
