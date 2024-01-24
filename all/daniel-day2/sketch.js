@@ -104,7 +104,7 @@ window.mouseDragged = function () {
 
 window.mouseReleased = function () {
 
-  let d = dist(window.innerWidth / 2, window.innerHeight / 2, mouseX, mouseY);
+  let d = dist(width / 2, height / 2, mouseX, mouseY);
   zone = false;
   springCol.target = 0;
 
@@ -112,12 +112,12 @@ window.mouseReleased = function () {
     lineReleaseSound.play();
   }
 
-  if (stageSketch2 == 2 && d >= 300) {
+  if (stageSketch2 == 2 && d >= objSize/2) {
     figerTrait1 = true;
-    springX.position = window.innerWidth / 2;
+    springX.position = width / 2;
     d = 0;
   }
-  else if (stageSketch2 == 3 && d >= 300) {
+  else if (stageSketch2 == 3 && d >= objSize/2) {
     figerTrait2 = true;
     stageSketch2 = 3;
     if (finalSound == 0) {
