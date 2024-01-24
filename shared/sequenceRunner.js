@@ -60,6 +60,7 @@ export class SequenceRunner extends EventTarget {
 
     if (this.currentSequence) {
       this.currentSequence.iframe.style = "z-index:99";
+      this.sequencesFiltered[this.currentSequence.sequenceId].count++
     }
 
     const nextSequenceId = selectNextSequenceId(
@@ -90,7 +91,9 @@ export class SequenceRunner extends EventTarget {
     console.log("set filter", filter)
 
     this.currentFilter = filter
-    this.sequencesFiltered = this.sequences.filter((seq) => this.currentFilter == undefined || seq.student === this.currentFilter)
+    this.sequencesFiltered = this.sequences
+        .filter((seq) => this.currentFilter == undefined || seq.student === this.currentFilter)
+        .map(seq=>Object.assign({},seq,{count:0}))
 
     this.clear()
   }
@@ -126,19 +129,30 @@ export class SequenceRunner extends EventTarget {
 }
 
 
-function selectNextSequenceId(endShape, urls) {
-  const matchingSequences = urls
-    .map((seq, index) => ({ seq, index })) // Map each sequence to an object with the sequence and its index
-    .filter(({ seq }) => {
+function selectNextSequenceId(endShape, sequences) {
+
+  sequences.forEach(seq=>{seq.count = Math.max(1,seq.count)})
+  const matchingSequenceIds = sequences
+    .map((seq, index) => index) // Map each sequence to an object with the sequence and its index
+    .filter((seqId) => {
       // Filter based on the endShape and, if currentStudent is provided, also filter by student name
       return (
-        seq.begin === endShape
+        sequences[seqId].begin === endShape
       );
     });
 
-  if (matchingSequences.length > 0) {
-    const randomIndex = Math.floor(Math.random() * matchingSequences.length);
-    return matchingSequences[randomIndex].index; // Return the index of the selected sequence
+  const lowestCount = matchingSequenceIds
+      .map(seqId=>sequences[seqId].count)
+      .reduce((prev,curr)=>{
+        return Math.min(prev,curr)
+      },Number.POSITIVE_INFINITY)
+
+  const matchingSequencesWithLowestCount = matchingSequenceIds
+      .filter(seqId=>(sequences[seqId].count) === lowestCount)
+
+  if (matchingSequencesWithLowestCount.length > 0) {
+    const randomIndex = Math.floor(Math.random() * matchingSequencesWithLowestCount.length);
+    return matchingSequencesWithLowestCount[randomIndex]; // Return the index of the selected sequence
   }
 
   return 0; // Return 0 if no matching sequence is found
