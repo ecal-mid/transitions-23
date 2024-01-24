@@ -24,12 +24,12 @@ let myShader;
 let startTransition = false;
 let startPlayTransition = false;
 let mouseMovedAmount = 0;
-
+let isFinishing = false
 
 let mouseDistanceToCenter;
 
-import { SpringNumber } from "../../shared/spring.js";
-import { sendSequenceNextSignal } from "../../shared/sequenceRunner.js"
+import {SpringNumber} from "../../shared/spring.js";
+import {sendSequenceNextSignal} from "../../shared/sequenceRunner.js"
 
 
 let springPlayX = new SpringNumber({
@@ -53,24 +53,29 @@ let springOffsetY = new SpringNumber({
     halfLife: 1, // time until amplitude is halved
 });
 
+let endLerp = new SpringNumber({
+    position: 0, // start position
+    frequency: 3, // oscillations per second (approximate)
+    halfLife: 0.05, // time until amplitude is halved
+})
+
 window.preload = function () {
     myShader = loadShader("assets/shader.vert", "assets/shader.frag");
 };
 
 window.setup = function () {
-    canvas = createCanvas(windowWidth, windowHeight);
+    canvas = createCanvas(innerWidth, innerHeight);
+
+    const size = min(width, height)
     pg = createGraphics(
-        min(windowWidth, windowHeight),
-        min(windowWidth, windowHeight),
+        size, size,
         WEBGL
     );
     dc = createGraphics(
-        min(windowWidth, windowHeight),
-        min(windowWidth, windowHeight)
+        size, size,
     );
-    pixelDensity(2);
-    pg.pixelDensity(1);
-    dc.pixelDensity(1);
+    pg.pixelDensity(1)
+    dc.pixelDensity(1)
     createUI();
 
     mouseDistanceToCenter = createVector(0, 0);
@@ -87,6 +92,13 @@ window.windowResized = function () {
 
 window.draw = function () {
     background(255);
+
+    // console.log(mouseMovedAmount);
+    if (startPlayTransition) {
+        //get distance moved
+        let distance = dist(pmouseX, pmouseY, mouseX, mouseY);
+        mouseMovedAmount += distance;
+    }
 
     // get the distance to the center of the screen compared to the mouse position
     mouseDistanceToCenter.set(mouseX - width / 2, mouseY - height / 2);
@@ -110,9 +122,7 @@ window.draw = function () {
         offsetY = lerp(offsetY, 3, 0.1);
 
         if (abs(offsetX - 3) < 0.01 && abs(offsetY - 3) < 0.01) {
-            sendSequenceNextSignal(); // finish sketch
-            //console.log("finish sketch");
-            noLoop();
+           isFinishing = true
         }
     }
 
@@ -151,7 +161,9 @@ window.draw = function () {
         let y = mouseDistanceToCenter.y;
 
         //map the mouse distance to the center to the spring target to offset the grid
-        let maximumMvmt = map(pow(map(mouseMovedAmount, 0, 20000, 0, 1, true), 3), 0, 1, 0.2, 3);
+        let size = min(width, height)
+        let maximumMvmt = map(pow(map(mouseMovedAmount, 0, size * 20, 0, 1, true), 3), 0, 1, 0.2, 3);
+
         springPlayX.target = map(x, -width / 2, width / 2, -maximumMvmt, maximumMvmt);
         springPlayY.target = map(y, -height / 2, height / 2, -maximumMvmt, maximumMvmt);
 
@@ -166,10 +178,6 @@ window.draw = function () {
     //     startTransition = false;
     // }
 
-    drawCircle(dc);
-
-    useSingleShader(pg, dc, [gridX, gridY], [offsetX, offsetY]);
-
     const sceneSize = min(width, height);
     const centerX = width / 2;
     const centerY = height / 2;
@@ -177,12 +185,53 @@ window.draw = function () {
     const halfWidth = objSize / tan(60);
     const strokeW = 20;
 
-    push();
-    imageMode(CENTER);
-    translate(centerX, centerY);
-    image(pg, 0, 0, sceneSize / 1.5, sceneSize / 1.5);
-    pop();
+    if(isFinishing)
+    {
 
+        const gridCount = 5
+        const pointSize = strokeW
+        push()
+        translate(centerX, centerY);
+        const gridEndScale = (objSize / 4 * 5) / 2 / (min(height, width) / 5) * 0.96
+        const pointEndScale = 0.41
+
+        endLerp.target = 1;
+        endLerp.step(deltaTime/1000)
+
+        const gridScale = lerp(gridEndScale,1,endLerp.position)
+        const pointScale = lerp(pointEndScale,1,endLerp.position)
+        scale(gridScale)
+        noStroke()
+        fill(0)
+        for (let x = 0; x < gridCount; x++) {
+            for (let y = 0; y < gridCount; y++) {
+                const xPos = map(x, 0, gridCount - 1, -objSize / 2, +objSize / 2, x)
+                const yPos = map(y, 0, gridCount - 1, -objSize / 2, +objSize / 2, y)
+                circle(xPos, yPos, pointSize * pointScale)
+            }
+        }
+        pop()
+
+        if( abs(endLerp.position-endLerp.target) < 0.01 &&
+            abs(endLerp.velocity) < 0.01){
+            sendSequenceNextSignal(); // finish sketch
+            //console.log("finish sketch");
+            noLoop();
+        }
+    }
+    else{
+
+        drawCircle(dc);
+
+        useSingleShader(pg, dc, [gridX, gridY], [offsetX, offsetY]);
+
+        push();
+        imageMode(CENTER);
+        translate(centerX, centerY);
+        image(pg, 0, 0, pg.width, pg.height);
+        pop();
+
+    }
     // if (mouseIsPressed) drawDots(window);
 };
 
@@ -254,16 +303,13 @@ function drawCircle(ctx) {
     const centerX = ctx.width / 2;
     const centerY = ctx.height / 2;
     const objSize = sceneSize / 2;
-    const halfWidth = objSize / tan(60);
-    const strokeW = 20;
     ctx.clear();
     ctx.fill(0);
     ctx.noStroke();
     ctx.rectMode(CENTER);
-    ctx.strokeWeight(strokeW);
-    ctx.stroke(0);
     ctx.circle(centerX, centerY, objSize);
 }
+
 function useSingleShader(ctx, shaderCtx, nbOfSquares, offset) {
     ctx.push();
     ctx.clear();
@@ -281,6 +327,7 @@ function useSingleShader(ctx, shaderCtx, nbOfSquares, offset) {
     ctx.rect(-height / 2, -width / 2, width, height);
     ctx.pop();
 }
+
 function drawDots(ctx) {
     const sceneSize = min(width, height);
     const centerX = width / 2;
@@ -314,6 +361,7 @@ function drawDots(ctx) {
         }
     }
 }
+
 //if I press the T key on the keyboard, consolelog the current values of the sliders
 window.keyPressed = function () {
     if (key === "t" || key === "T") {
@@ -323,11 +371,5 @@ window.keyPressed = function () {
 
 window.mouseMoved = function () {
 
-    // console.log(mouseMovedAmount);
-    if (startPlayTransition) {
-        //get distance moved
-        let distance = dist(pmouseX, pmouseY, mouseX, mouseY);
-        mouseMovedAmount += distance;
-    }
 
 }
