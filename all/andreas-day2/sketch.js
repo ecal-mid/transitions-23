@@ -94,29 +94,14 @@ window.setup = function () {
     pg = createGraphics(windowWidth, windowHeight, WEBGL);
     createSquares();
     //after delay of 2 seconds set all of the squares state to 1
-    setTimeout(() => {
-        mySound1.play();
-        squares.forEach((square) => {
-            square.state = 1;
-        });
-    }, 1000);
+
+    squares.forEach((square) => {
+        square.state = 1;
+    });
 }
 
 window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
-}
-
-window.mouseMoved = function () {
-    squares.forEach((square) => {
-        if (square.isInside(mouseX, mouseY) && abs(square.currentLineLength - square.targetLineLength) < 1 && square.state == 1) {
-            square.state = 2;
-        }
-        else if (square.isInside(mouseX, mouseY) && square.state == 3) {
-            square.state = 4;
-        }
-    });
-
-
 }
 
 function allSquaresTriangles() {
@@ -140,6 +125,20 @@ function allSquaresState4() {
 }
 
 window.draw = function () {
+
+
+    if(mouseIsPressed)
+    {
+
+        squares.forEach((square) => {
+            if (square.isInside(mouseX, mouseY) && square.state == 1) {
+                square.state = 2;
+            }
+            else if (square.isInside(mouseX, mouseY) && square.state == 3) {
+                square.state = 4;
+            }
+        });
+    }
 
 
     background(255);
